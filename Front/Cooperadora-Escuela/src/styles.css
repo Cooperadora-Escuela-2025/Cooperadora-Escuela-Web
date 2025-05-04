@@ -54,3 +54,20 @@ h6 {
     /* Aplica la fuente a los botones */
     color: #222;
 }
+
+/* mantiene el footer siempre abajo */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .content-wrap {
+    flex: 1;
+  }

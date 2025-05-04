@@ -2,14 +2,34 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="assets/logo_escuela.png" alt="Logo de la escuela" class="logo me-3" style="height: 50px;" />
+                <img src="../../../assets/logo_escuela.png" alt="Logo de la escuela" class="logo me-3" style="height: 50px;" />
                 <h1 class="h4 mb-0">Juan Bautista Alberdi</h1>
             </div>
-            <div class="flex-grow-1 text-center"> <!-- Contenedor para centrar el botón -->
-                <button class="btn btn-light" (click)="logout()">
+
+            <!-- Contenedor para centrar el botón -->
+            <!-- <div class="flex-grow-1 text-center"> 
+                 <button class="btn btn-light" (click)="logout()">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </button>
-            </div>
+            </div> -->
+
+             <!-- menu perfil -->
+        <div class="dropdown">
+            <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+               href="#"
+               role="button"
+               id="dropdownUser"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+              <i class="fas fa-user-circle fa-2x me-2"></i>
+              <!-- <span *ngIf="userProfile">{{ userProfile.first_name }} {{ userProfile.last_name }}</span> -->
+            </a>
+    
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+              <li><a class="dropdown-item" >Mi perfil</a></li>
+              <li><button class="dropdown-item">Cerrar sesión</button></li>
+            </ul>
+          </div>
         </div>
     </div>
 </header>
