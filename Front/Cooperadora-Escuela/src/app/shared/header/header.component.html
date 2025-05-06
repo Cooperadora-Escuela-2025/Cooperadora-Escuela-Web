@@ -7,23 +7,22 @@
             </div>
 
              <!-- menu perfil -->
-        <div class="dropdown">
-            <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-               href="#"
-               role="button"
-               id="dropdownUser"
-               data-bs-toggle="dropdown"
-               aria-expanded="false">
-              <i class="fas fa-user-circle fa-2x me-2"></i>
-              <!-- <span *ngIf="userProfile">{{ userProfile.first_name }} {{ userProfile.last_name }}</span> -->
-               <span>Nombre de Usuario</span>
-            </a>
-    
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-          <li><a class="dropdown-item" routerLink="profile" >Mi perfil</a></li>
-              <li><button class="dropdown-item">Cerrar sesión</button></li>
-            </ul>
-          </div>
+             <div class="dropdown" *ngIf="userProfile">
+                <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                   href="#"
+                   role="button"
+                   id="dropdownUser"
+                   data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                  <i class="fas fa-user-circle fa-2x me-2"></i>
+                  <span>{{ userProfile.first_name }} {{ userProfile.last_name }}</span>
+                </a>
+              
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                  <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
+                  <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
+                </ul>
+              </div>
         </div>
     </div>
 </header>

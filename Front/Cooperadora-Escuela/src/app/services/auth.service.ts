@@ -9,6 +9,8 @@ import { User } from '../models/auth.model';
   providedIn: 'root'
 })
 export class AuthService {
+
+
   private baseUrl = 'http://localhost:8000/'; 
 
   constructor(private http: HttpClient) {}
@@ -45,4 +47,14 @@ export class AuthService {
     localStorage.removeItem('user_id');
     window.location.href = '/login';
   }
+
+  getUser(id: number): Observable<User> {
+  
+  return this.http.get<User>(`${this.baseUrl+"user/"}${id}/`);
+}
+
+getUserFromStorage(): any {
+  const user = localStorage.getItem('user');
+  return user ? JSON.parse(user) : null;
+}
 }

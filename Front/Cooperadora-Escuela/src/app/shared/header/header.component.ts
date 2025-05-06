@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { ProfileService } from '../../services/profile.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,12 +12,24 @@ import { Router, RouterModule } from '@angular/router';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
+  userProfile: any;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private profileService: ProfileService,private authService: AuthService) { }
 
-  logout(): void {
-    // Aquí puedes agregar la lógica para cerrar la sesión (por ejemplo, eliminar el token de autenticación).
-    this.router.navigate(['/login']);
+  ngOnInit(): void {
+    this.userProfile = this.authService.getUserFromStorage();
   }
 
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  getUserProfile(): void {
+    
+    this.profileService.getProfile().subscribe({
+     next: (profile) => this.userProfile = profile,
+     error: (err) => console.error('Error al obtener el perfil', err)
+    })
+   }
 }
