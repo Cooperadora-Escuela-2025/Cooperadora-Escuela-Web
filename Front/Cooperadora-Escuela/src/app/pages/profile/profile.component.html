@@ -1,0 +1,75 @@
+<main>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow rounded-4">
+            <div class="card-body p-4">
+              <button class="btn btn-outline-secondary mb-3"  [routerLink]="['/home']">Volver</button>
+              <div class="d-flex align-items-center mb-4">
+                <img src="../../../assets/icon-user.png"
+                     class="rounded-circle me-3"
+                     alt="Foto de perfil"
+                     style="width: 80px; height: 80px; object-fit: cover; background-color: #f0f0f0;">
+                <div>
+                  <h4 class="mb-0">Nombre del Usuario</h4>
+                  <small class="text-muted">usuarioemail.com</small>
+                </div>
+                <button class="btn btn-outline-primary ms-auto" onclick="toggleEdit()">Editar perfil</button>
+              </div>
+  
+              <!-- Vista de datos -->
+              <div id="view-data">
+                <h6>Datos personales</h6>
+                <p><strong>Nombre:</strong> Juan</p>
+                <p><strong>Apellido:</strong> Pérez</p>
+                <p><strong>DNI:</strong> 12345678</p>
+                <p><strong>Teléfono:</strong> 123-456-7890</p>
+                <p><strong>Turno:</strong> Mañana</p>
+                <p><strong>Curso/Año:</strong> 3°</p>
+              </div>
+  
+              <!-- Formulario de edición -->
+              <form id="edit-form" class="mt-4 d-none">
+                <h6 class="mb-3">Editar información</h6>
+                <div class="mb-3">
+                  <label for="nombre" class="form-label">Nombre</label>
+                  <input type="text" class="form-control" id="nombre" value="Juan">
+                </div>
+                <div class="mb-3">
+                  <label for="apellido" class="form-label">Apellido</label>
+                  <input type="text" class="form-control" id="apellido" value="Pérez">
+                </div>
+                <div class="mb-3">
+                  <label for="dni" class="form-label">DNI</label>
+                  <input type="text" class="form-control" id="dni" value="12345678">
+                </div>
+                <div class="mb-3">
+                  <label for="telefono" class="form-label">Teléfono</label>
+                  <input type="text" class="form-control" id="telefono" value="123-456-7890">
+                </div>
+                <div class="mb-3">
+                  <label for="turno" class="form-label">Turno</label>
+                  <select class="form-select" id="turno">
+                    <option selected>Mañana</option>
+                    <option>Tarde</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="curso" class="form-label">Curso/Año</label>
+                  <select class="form-select" id="curso">
+                    <option selected>1°</option>
+                    <option>2°</option>
+                    <option>3°</option>
+                    <option>4°</option>
+                    <option>5°</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar cambios</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  

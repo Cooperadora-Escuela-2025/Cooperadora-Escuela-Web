@@ -1,5 +1,5 @@
 .custom-jumbotron {
-    background-image: url('../../../assets/img-home.png');
+    background-image: url('/assets/img-home.png');
     background-size: cover; 
     background-position: center; 
     color: white; 
@@ -8,13 +8,13 @@
 
 
 .productos{
-    background-image: url('../../../assets/utiles.png');
+    background-image: url('/assets/utiles.png');
     background-size: cover;
     
 }
 
 .cuotas{
-    background-image: url('../../../assets/cuota.png');
+    background-image: url('/assets/cuota.png');
     background-size: cover;
 }
 

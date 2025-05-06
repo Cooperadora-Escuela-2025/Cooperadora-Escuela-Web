@@ -16,10 +16,16 @@ import { FooterComponent } from './shared/footer/footer.component';
 })
 export class AppComponent {
   title = 'Cooperadora-Escuela';
-
+  showFooter = true;
  
   constructor(private router: Router) {
 
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // rutas donde no sale el footer
+        this.showFooter = !['/login','/registro'].includes(event.urlAfterRedirects);
+      }
+    });
+  }
   
   }
-}

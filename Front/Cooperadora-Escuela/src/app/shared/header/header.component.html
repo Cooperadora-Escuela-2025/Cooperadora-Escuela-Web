@@ -23,10 +23,11 @@
                aria-expanded="false">
               <i class="fas fa-user-circle fa-2x me-2"></i>
               <!-- <span *ngIf="userProfile">{{ userProfile.first_name }} {{ userProfile.last_name }}</span> -->
+               <span>Nombre de Usuario</span>
             </a>
     
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-              <li><a class="dropdown-item" >Mi perfil</a></li>
+          <li><a class="dropdown-item" routerLink="profile" >Mi perfil</a></li>
               <li><button class="dropdown-item">Cerrar sesión</button></li>
             </ul>
           </div>
