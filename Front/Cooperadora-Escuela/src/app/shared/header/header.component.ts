@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
 
@@ -14,7 +14,7 @@ export class HeaderComponent {
 
   logout(): void {
     // Aquí puedes agregar la lógica para cerrar la sesión (por ejemplo, eliminar el token de autenticación).
-    this.router.navigate(['/login']); // Redirige al login
+    this.router.navigate(['/login']);
   }
 
 }
