@@ -1,26 +1,28 @@
-/* Altura completa para html y body */
+/* Altura completa para html y body
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-  }
+  } */
   
   /* Flexbox en body */
-  body {
+  /* body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-  }
+  } */
   
   /* Asegura que el contenido principal empuje el footer */
-  router-outlet, app-home {
+  /* router-outlet, app-home {
     flex: 1;
     display: flex;
     flex-direction: column;
-  }
+  } */
   
   /* Esto asegura que el footer se quede abajo */
-  app-footer {
+  /* app-footer {
     margin-top: auto;
-  }
-  
+  } */
+
+ 
+

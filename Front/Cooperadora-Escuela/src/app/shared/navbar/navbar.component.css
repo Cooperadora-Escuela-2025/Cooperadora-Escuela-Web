@@ -1,0 +1,19 @@
+.navbar {
+    background: linear-gradient(to right, #343a40, #212529);
+    padding: 0px 289px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+#botonnav{
+    text-align: center;
+    text-decoration: none;
+    padding: 0 30px;
+    color: white;
+}
+  
+  .buttonnav:hover {
+    background-color: #351616;
+  }
+  

@@ -3,6 +3,7 @@ import { RouterOutlet, Router, RouterModule, NavigationEnd } from '@angular/rout
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 
 
 
@@ -10,7 +11,7 @@ import { FooterComponent } from './shared/footer/footer.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, CommonModule, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, RouterModule, CommonModule, HeaderComponent, FooterComponent,NavbarComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
