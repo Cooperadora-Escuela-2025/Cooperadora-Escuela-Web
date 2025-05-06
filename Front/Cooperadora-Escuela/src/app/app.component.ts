@@ -23,7 +23,7 @@ export class AppComponent {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         // rutas donde no sale el footer
-        this.showFooter = !['/login','/registro'].includes(event.urlAfterRedirects);
+        this.showFooter = !['/login','/register'].includes(event.urlAfterRedirects);
       }
     });
   }

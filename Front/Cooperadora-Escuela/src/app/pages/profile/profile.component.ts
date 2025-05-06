@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterModule,CommonModule],
+  imports: [RouterModule,CommonModule,ReactiveFormsModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -18,19 +18,19 @@ export class ProfileComponent {
 
   shifts = ['Mañana', 'Tarde'];
   gradeYears = [1, 2, 3, 4, 5];
-
+  editMode = false;
 
   constructor(private fb: FormBuilder,private profileService: ProfileService) {}
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
-      first_name: [''],
-      last_name: [''],
+      first_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      last_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
       email: [{ value: '', disabled: true }],
-      dni: [''],
-      shift: [''],
-      grade_year: [''],
-      telephone: ['']
+      dni: ['', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
+      shift: ['', Validators.required],
+      grade_year: ['', Validators.required],
+      telephone: ['', [Validators.required, Validators.pattern(/^\d{7,15}$/)]]
     });
     this.loadProfile();
   }

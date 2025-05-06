@@ -1,75 +1,112 @@
 <main>
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card shadow rounded-4">
-            <div class="card-body p-4">
-              <button class="btn btn-outline-secondary mb-3"  [routerLink]="['/home']">Volver</button>
-              <div class="d-flex align-items-center mb-4">
-                <img src="../../../assets/icon-user.png"
-                     class="rounded-circle me-3"
-                     alt="Foto de perfil"
-                     style="width: 80px; height: 80px; object-fit: cover; background-color: #f0f0f0;">
-                <div>
-                  <h4 class="mb-0">Nombre del Usuario</h4>
-                  <small class="text-muted">usuarioemail.com</small>
-                </div>
-                <button class="btn btn-outline-primary ms-auto" onclick="toggleEdit()">Editar perfil</button>
+  <div class="container mt-5" *ngIf="!loading; else loadingTemplate">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow rounded-4">
+          <div class="card-body p-4">
+            <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']">Volver</button>
+
+            <div class="d-flex align-items-center mb-4">
+              <img src="../../../assets/icon-user.png" class="rounded-circle me-3" alt="Foto de perfil"
+                style="width: 80px; height: 80px; object-fit: cover; background-color: #f0f0f0;">
+              <div>
+                <h4 class="mb-0">{{ profileForm.get('first_name')?.value }} {{ profileForm.get('last_name')?.value }}
+                </h4>
+                <small class="text-muted">{{ profileForm.get('email')?.value }}</small>
               </div>
-  
-              <!-- Vista de datos -->
-              <div id="view-data">
-                <h6>Datos personales</h6>
-                <p><strong>Nombre:</strong> Juan</p>
-                <p><strong>Apellido:</strong> Pérez</p>
-                <p><strong>DNI:</strong> 12345678</p>
-                <p><strong>Teléfono:</strong> 123-456-7890</p>
-                <p><strong>Turno:</strong> Mañana</p>
-                <p><strong>Curso/Año:</strong> 3°</p>
-              </div>
-  
-              <!-- Formulario de edición -->
-              <form id="edit-form" class="mt-4 d-none">
-                <h6 class="mb-3">Editar información</h6>
-                <div class="mb-3">
-                  <label for="nombre" class="form-label">Nombre</label>
-                  <input type="text" class="form-control" id="nombre" value="Juan">
-                </div>
-                <div class="mb-3">
-                  <label for="apellido" class="form-label">Apellido</label>
-                  <input type="text" class="form-control" id="apellido" value="Pérez">
-                </div>
-                <div class="mb-3">
-                  <label for="dni" class="form-label">DNI</label>
-                  <input type="text" class="form-control" id="dni" value="12345678">
-                </div>
-                <div class="mb-3">
-                  <label for="telefono" class="form-label">Teléfono</label>
-                  <input type="text" class="form-control" id="telefono" value="123-456-7890">
-                </div>
-                <div class="mb-3">
-                  <label for="turno" class="form-label">Turno</label>
-                  <select class="form-select" id="turno">
-                    <option selected>Mañana</option>
-                    <option>Tarde</option>
-                  </select>
-                </div>
-                <div class="mb-3">
-                  <label for="curso" class="form-label">Curso/Año</label>
-                  <select class="form-select" id="curso">
-                    <option selected>1°</option>
-                    <option>2°</option>
-                    <option>3°</option>
-                    <option>4°</option>
-                    <option>5°</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-success">Guardar cambios</button>
-              </form>
+              <button class="btn btn-outline-primary ms-auto" (click)="editMode = !editMode">
+                {{ editMode ? 'Cancelar' : 'Editar perfil' }}
+              </button>
             </div>
+
+            <!-- Vista de datos -->
+            <div *ngIf="!editMode">
+              <h6>Datos personales</h6>
+              <p><strong>Nombre:</strong> {{ profileForm.get('first_name')?.value }}</p>
+              <p><strong>Apellido:</strong> {{ profileForm.get('last_name')?.value }}</p>
+              <p><strong>DNI:</strong> {{ profileForm.get('dni')?.value }}</p>
+              <p><strong>Teléfono:</strong> {{ profileForm.get('telephone')?.value }}</p>
+              <p><strong>Turno:</strong> {{ profileForm.get('shift')?.value }}</p>
+              <p><strong>Curso/Año:</strong> {{ profileForm.get('grade_year')?.value }}°</p>
+            </div>
+
+            <!-- Formulario de edición -->
+            <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveChanges()" class="mt-4">
+              <h6 class="mb-3">Editar información</h6>
+              <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" formControlName="first_name" minlength="2"
+                  maxlength="30">
+                <div *ngIf="profileForm.get('first_name')?.invalid && profileForm.get('first_name')?.touched"
+                  class="text-danger small">
+                  Nombre requerido (2-30 caracteres).
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" id="apellido" formControlName="last_name" minlength="2"
+                  maxlength="30">
+                <div *ngIf="profileForm.get('last_name')?.invalid && profileForm.get('last_name')?.touched"
+                  class="text-danger small">
+                  Apellido requerido (2-30 caracteres).
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="dni" class="form-label">DNI</label>
+                <input type="number" class="form-control" id="dni" formControlName="dni" min="1000000" max="99999999">
+                <div *ngIf="profileForm.get('dni')?.invalid && profileForm.get('dni')?.touched"
+                  class="text-danger small">
+                  DNI válido requerido (entre 1.000.000 y 99.999.999).
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" formControlName="telephone">
+                <div *ngIf="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched"
+                  class="text-danger small">
+                  Teléfono requerido (solo números, entre 7 y 15 dígitos).
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="turno" class="form-label">Turno</label>
+                <select class="form-select" id="turno" formControlName="shift">
+                  <option value="" disabled>Seleccione un turno</option>
+                  <option *ngFor="let shiftOption of shifts" [value]="shiftOption">{{ shiftOption }}</option>
+                </select>
+                <div *ngIf="profileForm.get('shift')?.invalid && profileForm.get('shift')?.touched"
+                  class="text-danger small">
+                  Seleccione un turno.
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="curso" class="form-label">Curso/Año</label>
+                <select class="form-select" id="curso" formControlName="grade_year">
+                  <option value="" disabled>Seleccione un curso</option>
+                  <option *ngFor="let year of gradeYears" [value]="year">{{ year }}°</option>
+                </select>
+                <div *ngIf="profileForm.get('grade_year')?.invalid && profileForm.get('grade_year')?.touched"
+                  class="text-danger small">
+                  Seleccione un curso/año.
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-success" [disabled]="profileForm.invalid">Guardar cambios</button>
+            </form>
+
           </div>
         </div>
       </div>
     </div>
-  </main>
-  
+  </div>
+
+  <!-- Cargando -->
+  <ng-template #loadingTemplate>
+    <div class="text-center mt-5">
+      <p>Cargando perfil...</p>
+    </div>
+  </ng-template>
+</main>

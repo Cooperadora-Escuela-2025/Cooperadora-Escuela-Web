@@ -45,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'api.urls'
@@ -71,7 +72,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # URL de tu aplicación Angular
 ]
 
-
+CORS_ALLOW_ALL_ORIGINS = True
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -123,3 +124,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
