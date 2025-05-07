@@ -10,11 +10,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import viewsets,permissions
 import json
 from django.http import JsonResponse
+from rest_framework.permissions import IsAdminUser
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
-    # permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUser]
     
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
