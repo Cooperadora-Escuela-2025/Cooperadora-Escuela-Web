@@ -1,13 +1,18 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
 from cooperadora import views
 from cooperadora.views import profile_view,login,register
 from rest_framework_simplejwt import views as jwt_views
+from cooperadora.views import ProductViewSet, UserViewSet, OrderViewSet, CheckoutView, download_orders_excel
+
 
 router = DefaultRouter()
+router.register(r'products', ProductViewSet)
+router.register(r'users', UserViewSet)
+router.register(r'orders', OrderViewSet)
 
 
 urlpatterns = [
@@ -15,6 +20,10 @@ urlpatterns = [
     path('login/', login, name='login'),  
     path('register/', views.register, name='register'), 
     path('profile/', views.profile_view, name='profile'),
+    
+    path('', include(router.urls)),
+    path('checkout/', CheckoutView.as_view(), name='checkout'),
+    path('download-orders/', download_orders_excel, name='download_orders'),
     
      #rutas para obtener el token de acceso y el token de actualización
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),

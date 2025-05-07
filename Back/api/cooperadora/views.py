@@ -11,6 +11,19 @@ from rest_framework import viewsets,permissions
 import json
 from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser
+from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework import status
+from .models import Product, User, Order, OrderProduct
+from .serializers import ProductSerializer, UserSerializer, OrderSerializer
+from django.http import JsonResponse
+from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+from openpyxl import Workbook
+from django.http import HttpResponse
+from openpyxl.styles import Font, PatternFill
+from collections import defaultdict
+from decimal import Decimal
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -144,3 +157,134 @@ def register(request):
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
+    
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    
+class CheckoutView(APIView):
+    def post(self, request):
+        serializer = OrderSerializer(data=request.data)  # Validar los datos de la orden
+        if serializer.is_valid():
+            serializer.save()  # Guardar la orden y los productos asociados
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        try:
+            # Lee los datos JSON del cuerpo de la solicitud
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                return JsonResponse({'message': 'Login exitoso'}, status=200)
+            else:
+                return JsonResponse({'error': 'Credenciales incorrectas'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Datos inválidos'}, status=400)
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+def download_orders_excel(request):
+    # Crear un nuevo libro de Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Ordenes"
+
+    # Agregar encabezados
+    headers = [
+        "ID", 
+        "Nombre", 
+        "Apellido", 
+        "DNI", 
+        "Producto", 
+        "Cantidad", 
+        "Precio Unitario", 
+        "Forma de Pago"
+    ]
+    ws.append(headers)
+
+    # Estilo para los encabezados
+    for cell in ws[1]:
+        cell.font = Font(bold=True)
+
+    # Obtener todas las órdenes y calcular el total general
+    orders = Order.objects.all()
+    total_general = Decimal('0.0')  # Usar Decimal para el total general
+
+    for order in orders:
+        for order_product in order.orderproduct_set.all():
+            precio_unitario = order_product.unit_price  # Precio unitario (Decimal)
+            total_general += precio_unitario  # Sumar al total general
+
+            ws.append([
+                order.id,
+                order.name,
+                order.surname,
+                order.dni,
+                order_product.product.name,
+                order_product.quantity,
+                float(precio_unitario),  # Convertir a float para el archivo Excel
+                order.payment_method
+            ])
+
+    # Agregar una fila con el total general
+    ws.append([])  # Fila vacía para separar
+    total_row = [
+        "",  # ID
+        "",  # Nombre
+        "",  # Apellido
+        "",  # DNI
+        "",  # Producto
+        "",  # Cantidad
+        "Total General",  # Etiqueta
+        float(total_general)  # Valor del total general (convertido a float)
+    ]
+    ws.append(total_row)
+
+    # Aplicar estilo a la fila del total general
+    for cell in ws[ws.max_row]:
+        cell.font = Font(bold=True, color="FFFFFF")  # Texto en blanco y negrita
+        cell.fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")  # Fondo azul
+
+    # Ajustar el ancho de las columnas
+    for col in ws.columns:
+        max_length = 0
+        column = col[0].column_letter
+        for cell in col:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(str(cell.value))
+            except:
+                pass
+        adjusted_width = (max_length + 2) * 1.2
+        ws.column_dimensions[column].width = adjusted_width
+
+    # Guardar el archivo en memoria
+    from io import BytesIO
+    excel_file = BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
+
+    # Crear la respuesta HTTP con el archivo Excel
+    response = HttpResponse(excel_file.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=ordenes.xlsx'
+
+    return response
