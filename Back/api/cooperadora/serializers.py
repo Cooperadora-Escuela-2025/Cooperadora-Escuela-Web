@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User,Profile
+from .models import Order, OrderProduct, Product, User,Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,3 +47,33 @@ class ProfileSerializer(serializers.ModelSerializer):
             instance.save()
 
             return instance
+        
+        
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+class OrderProductSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # Usar PrimaryKeyRelatedField
+
+    class Meta:
+        model = OrderProduct
+        fields = ['product', 'unit_price', 'quantity']
+       
+class OrderSerializer(serializers.ModelSerializer):
+    products = OrderProductSerializer(many=True)  # Usar OrderProductSerializer para los productos
+
+    class Meta:
+        model = Order
+        fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products']
+
+    def create(self, validated_data):
+        products_data = validated_data.pop('products')  # Extraer los datos de los productos
+        order = Order.objects.create(**validated_data)  # Crear la orden
+
+        # Crear los OrderProduct asociados
+        for product_data in products_data:
+            OrderProduct.objects.create(order=order, **product_data)
+
+        return order

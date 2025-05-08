@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .models import Profile,User
-from .serializers import UserSerializer,ProfileSerializer
+from .models import Profile,User,Product, Order, OrderProduct
+from .serializers import UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -13,9 +13,6 @@ from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser
 from django.shortcuts import render
 from rest_framework import status
-from .models import Product, User, Order, OrderProduct
-from .serializers import ProductSerializer, UserSerializer, OrderSerializer
-from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from openpyxl import Workbook
@@ -24,7 +21,6 @@ from openpyxl.styles import Font, PatternFill
 from collections import defaultdict
 from decimal import Decimal
 
-from rest_framework import status
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
@@ -35,8 +31,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
-      
-
+    
+    # perfil de usuario  
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])  #solo usuarios autenticados pueden acceder
 def profile_view(request):
@@ -61,7 +57,7 @@ def profile_view(request):
         return Response(serializer.errors, status=400)
 
 
-
+# iniciar sesion
 User = get_user_model()
 @csrf_exempt
 @api_view(['POST'])
@@ -105,7 +101,7 @@ def login(request):
         }
     })
     
-    
+    # registro
 User = get_user_model()
 @csrf_exempt
 @api_view(['POST'])
@@ -155,12 +151,7 @@ def register(request):
     else:
         return JsonResponse({"error": "Método no permitido."}, status=405)
 
-
-class IsAdminUser(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user and request.user.is_staff
-    
-
+# producto
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -170,9 +161,6 @@ class ProductViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
@@ -185,23 +173,6 @@ class CheckoutView(APIView):
             serializer.save()  # Guardar la orden y los productos asociados
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@csrf_exempt
-def login(request):
-    if request.method == 'POST':
-        try:
-            # Lee los datos JSON del cuerpo de la solicitud
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                return JsonResponse({'message': 'Login exitoso'}, status=200)
-            else:
-                return JsonResponse({'error': 'Credenciales incorrectas'}, status=400)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Datos inválidos'}, status=400)
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
 def download_orders_excel(request):
@@ -290,6 +261,8 @@ def download_orders_excel(request):
     response['Content-Disposition'] = 'attachment; filename=ordenes.xlsx'
 
     return response
+
+
 # vista para que el admin realice el crud de usuarios
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @permission_classes([IsAdminUser])
