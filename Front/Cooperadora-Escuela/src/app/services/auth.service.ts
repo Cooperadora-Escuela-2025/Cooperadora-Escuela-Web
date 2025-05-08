@@ -45,11 +45,13 @@ export class AuthService {
 
   
   logout(): void {
+
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_email');
     localStorage.removeItem('user_id');
     localStorage.removeItem('user');//no muestra el menu si el user no esta logeado
+    this.currentUserSubject.next(null);
     window.location.href = '/login';
   }
 

@@ -22,7 +22,11 @@ export class HeaderComponent {
       this.menuProfile = user;
     });
    
-    this.isAdminUser = this.authService.isAdmin();// solo lo ve el admin
+    // this.isAdminUser = this.authService.isAdmin();// solo lo ve el admin
+    this.authService.currentUser$.subscribe(user => {
+      this.menuProfile = user;
+      this.isAdminUser = user?.is_staff || false;
+    });
   }
 
 
@@ -31,7 +35,6 @@ export class HeaderComponent {
   }
 
   getUserProfile(): void {
-    
     this.authService.getUs().subscribe({
       next: (user) => this.menuProfile = user,
       error: (err) => console.error('Error al obtener el usuario', err)
