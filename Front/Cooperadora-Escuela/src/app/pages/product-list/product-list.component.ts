@@ -1,21 +1,19 @@
 import { Component, OnInit, DestroyRef } from '@angular/core';
-import { Product } from '../product.model';
-import { ProductService } from '../product.service';
+import { Product } from '../../models/product.model';
+import { ProductService } from '../../services/product.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartSummaryComponent } from "../cart-summary/cart-summary.component";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
-import { CartService } from '../services/cart.service';
-import { HeaderComponent } from "../header/header.component";
-import { FooterComponent } from "../footer/footer.component";
+import { CartService } from '../../services/cart.service';
 
 
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
