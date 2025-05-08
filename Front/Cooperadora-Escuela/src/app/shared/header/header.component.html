@@ -6,10 +6,11 @@
                 <h1 class="h2 mb-0">Cooperadora Escuela</h1>
             </div>
 
-            <!-- Íconos de usuario y carrito -->
+            
       <div class="d-flex align-items-center">
+
         <!-- Menú perfil -->
-        <div class="dropdown me-3" *ngIf="userProfile">
+        <div class="dropdown me-3" *ngIf="menuProfile">
           <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
              href="#"
              role="button"
@@ -17,15 +18,19 @@
              data-bs-toggle="dropdown"
              aria-expanded="false">
             <i class="fas fa-user-circle fa-2x"></i>
-            <!-- <span>{{ userProfile.first_name }} {{ userProfile.last_name }}</span> -->
+           
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+            <!-- Visible solo para admins -->
+    <li *ngIf="isAdminUser">
+      <a class="dropdown-item" [routerLink]="['/list-users']">Panel de administrador</a>
+    </li>
             <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
             <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
           </ul>
         </div>
 
-        <!-- Ícono de carrito -->
+       
         <i class="bi bi-cart-fill text-white fs-4" style="cursor: pointer;"></i>
       </div>
         </div>

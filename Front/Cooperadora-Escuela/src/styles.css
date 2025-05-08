@@ -78,3 +78,15 @@ html, body {
     padding: 2rem;
   }
   
+  footer {
+    margin-top: auto; /* Esto asegura que el footer siempre quede al final de la página */
+    background-color: #343a40; /* Color oscuro para el fondo */
+    color: #fff; /* Color de texto blanco */
+    padding: 20px 0; /* Relleno alrededor del footer */
+}
+  
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}

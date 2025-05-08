@@ -6,20 +6,26 @@ import { AboutUsComponent } from './pages/about-us/about-us.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { authGuard } from './guards/auth.guard';
+import { ListUsersComponent } from './pages/list-users/list-users.component';
 
 
 export const routes: Routes = [
+    // con restriccion
+    
+    { path: 'home',component:HomeComponent , canActivate: [authGuard] },
+    { path: 'about-us', component: AboutUsComponent  },
+    { path: 'contact', component: ContactComponent },
+    {path:'profile',component:ProfileComponent, canActivate: [authGuard] },
+    
+ 
+
+
+    {path:'list-users',component:ListUsersComponent},
+    // rutas publicas
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
-    { path: 'home',component:HomeComponent},
-    { path: 'about-us', component: AboutUsComponent },
-    { path: 'contact', component: ContactComponent },
-    {path:'home',component:HomeComponent},
-    {path:'profile',component:ProfileComponent},
     {path:'register',component:RegisterComponent}
- 
-  
-    
 ];
 
 @NgModule({

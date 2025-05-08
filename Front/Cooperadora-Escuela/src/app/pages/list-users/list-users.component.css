@@ -1,0 +1,36 @@
+.usuarios-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* sombra en la tabla */
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .usuarios-container th,
+  .usuarios-container td {
+    border: 1px solid #ddd; /* línea más clara */
+    padding: 10px;
+    text-align: left;
+    background-color: #fff;
+  }
+  
+  .usuarios-container th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  .usuarios-container tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .usuarios-container tr:hover {
+    background-color: #eef; /* sombreado al pasar el mouse */
+  }
+  
+  /* Estilo especial para la fila en edición */
+  .usuarios-container tr.editing {
+    background-color: #e0f7fa; /* celeste claro */
+    border: 2px solid #00acc1;
+  }
+  

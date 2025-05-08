@@ -12,12 +12,17 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  userProfile: any;
+  menuProfile: any;
+  isAdminUser: boolean = false;
 
-  constructor(private router: Router, private profileService: ProfileService,private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.userProfile = this.authService.getUserFromStorage();
+    this.authService.currentUser$.subscribe(user => {
+      this.menuProfile = user;
+    });
+   
+    this.isAdminUser = this.authService.isAdmin();// solo lo ve el admin
   }
 
 
@@ -27,9 +32,9 @@ export class HeaderComponent {
 
   getUserProfile(): void {
     
-    this.profileService.getProfile().subscribe({
-     next: (profile) => this.userProfile = profile,
-     error: (err) => console.error('Error al obtener el perfil', err)
-    })
+    this.authService.getUs().subscribe({
+      next: (user) => this.menuProfile = user,
+      error: (err) => console.error('Error al obtener el usuario', err)
+    });
    }
 }

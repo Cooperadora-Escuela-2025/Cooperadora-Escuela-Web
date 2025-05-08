@@ -18,15 +18,21 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 export class AppComponent {
   title = 'Cooperadora-Escuela';
   showFooter = true;
+
+
  
   constructor(private router: Router) {
 
+    // rutas donde no sale el footer
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // rutas donde no sale el footer
         this.showFooter = !['/login','/register'].includes(event.urlAfterRedirects);
       }
     });
+
+    
+
   }
+}
   
-  }
+  

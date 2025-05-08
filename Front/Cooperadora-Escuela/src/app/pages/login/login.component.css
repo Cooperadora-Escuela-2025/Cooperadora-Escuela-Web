@@ -1,3 +1,7 @@
 .card-header{
     background: linear-gradient(to right, #343a40, #212529);
 }
+
+a{
+    text-decoration: none;
+}

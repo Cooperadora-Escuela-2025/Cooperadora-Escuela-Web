@@ -10,7 +10,7 @@ import { ProfileService } from './profile.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthService,private profileService: ProfileService) {
+  constructor(private authService: AuthService) {
      console.log('authInterceptor creado');}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

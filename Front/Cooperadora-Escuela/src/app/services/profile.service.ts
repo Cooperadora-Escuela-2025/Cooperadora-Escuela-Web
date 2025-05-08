@@ -26,4 +26,36 @@ export class ProfileService {
    return this.http.put<any>(`${this.baseUrl}profile/`, profileData);
  }
 
+// enpoind para el admin
+
+// traer todos los perfiles 
+getAllProfiles(): Observable<any[]> {
+  const token = this.getAccessToken();  // Asegúrate de que el token esté disponible
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get<any[]>(`${this.baseUrl}all-users/`, { headers });
+}
+
+// traer perfil por id
+getProfileById(id: number): Observable<any> {
+  const token = this.getAccessToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get<any>(`${this.baseUrl}all-users/${id}/`, { headers });
+}
+
+// actualiza perfil por id
+updateProfileById(id: number, data: any): Observable<any> {
+  const token = this.getAccessToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  // Usa la URL correcta que incluye el id
+  return this.http.put<any>(`${this.baseUrl}all-users/${id}/`, data, { headers });
+}
+
+// elimina perfil por id
+deleteProfile(id: number): Observable<any> {
+  const token = this.getAccessToken();
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.delete<any>(`${this.baseUrl}all-users/${id}/`, { headers });
+}
+
+
 }

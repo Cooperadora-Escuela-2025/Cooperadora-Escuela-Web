@@ -1,6 +1,6 @@
 import { HttpClient,HttpHeaders  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/auth.model';
 
 
@@ -12,7 +12,10 @@ export class AuthService {
 
 
   private baseUrl = 'http://localhost:8000/'; 
-
+  // para que los datos del localstorage se actualizen
+  private currentUserSubject = new BehaviorSubject<any>(this.getUserFromStorage());
+  currentUser$ = this.currentUserSubject.asObservable();
+  
   constructor(private http: HttpClient) {}
 
   register(data: any) {
@@ -23,9 +26,10 @@ export class AuthService {
     return this.http.post<any>(this.baseUrl+"login/", credentials)
       .pipe(
         tap(response => {
+          //setUser para emitir el usuario logueado
+          this.setUser(response.user); // Usamos setUser para emitir el usuario logueado
           localStorage.setItem('access_token', response.access);
           localStorage.setItem('refresh', response.refresh);
-          localStorage.setItem('user', JSON.stringify(response.user)); // 👈 guardar datos del usuario
         })
       );
   }
@@ -45,16 +49,32 @@ export class AuthService {
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_email');
     localStorage.removeItem('user_id');
+    localStorage.removeItem('user');//no muestra el menu si el user no esta logeado
     window.location.href = '/login';
   }
 
+  setUser(user: any): void {
+    localStorage.setItem('user', JSON.stringify(user)); // Guardamos el usuario en localStorage
+    this.currentUserSubject.next(user); // Emitimos el usuario a través del BehaviorSubject
+  }
+
   getUser(id: number): Observable<User> {
-  
   return this.http.get<User>(`${this.baseUrl+"user/"}${id}/`);
 }
+
+getUs(): Observable<any> {
+  return this.http.get<any>(`${this.baseUrl}user/`);
+}
+
 
 getUserFromStorage(): any {
   const user = localStorage.getItem('user');
   return user ? JSON.parse(user) : null;
+}
+
+// para saber cuando entra el admin
+isAdmin(): boolean {
+  const user = this.getUserFromStorage();
+  return user?.is_staff === true;
 }
 }

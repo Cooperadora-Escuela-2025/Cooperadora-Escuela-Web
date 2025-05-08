@@ -11,16 +11,18 @@ from rest_framework import viewsets,permissions
 import json
 from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser
-
+from rest_framework import status
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     
+# permisos para el admin
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
+      
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])  #solo usuarios autenticados pueden acceder
@@ -141,6 +143,57 @@ def register(request):
         return JsonResponse({"error": "Método no permitido."}, status=405)
 
 
-class IsAdminUser(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user and request.user.is_staff
+# vista para que el admin realice el crud de usuarios
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@permission_classes([IsAdminUser])
+def all_profile_view(request, pk=None):
+    if request.method == 'GET':
+        if pk:
+            try:
+                profile = Profile.objects.get(pk=pk)
+                serializer = ProfileSerializer(profile)
+                return Response(serializer.data)
+            except Profile.DoesNotExist:
+                return Response({'error': 'Perfil no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            profiles = Profile.objects.all()
+            serializer = ProfileSerializer(profiles, many=True)
+            return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'PUT':
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({'error': 'Perfil no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            # Guardamos el perfil y actualizamos los campos del usuario (first_name, last_name)
+            user = profile.user
+            user.first_name = serializer.validated_data.get('first_name', user.first_name)
+            user.last_name = serializer.validated_data.get('last_name', user.last_name)
+            user.save()
+
+            # Guardamos el perfil
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        try:
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({'error': 'Perfil no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+        user = profile.user
+        profile.delete()
+        user.delete()
+        return Response({'message': 'Perfil y usuario eliminados exitosamente'}, status=status.HTTP_204_NO_CONTENT)
+

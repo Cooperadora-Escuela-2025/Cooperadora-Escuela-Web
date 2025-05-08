@@ -1,7 +1,7 @@
-<nav class="navbar">
+<nav class="navbar" *ngIf="authService.isLoggedIn()">
     <a id="botonnav" routerLink="/home">Home</a>
     <a id="botonnav" routerLink="/products">Producto</a>
     <a id="botonnav" routerLink="/contact">Contacto</a>
-    <a id="botonnav" routerLink="/about-us">Nosotros</a>
+    <a id="botonnav" routerLink="/about-us">Quienes somos</a>
 </nav>
   

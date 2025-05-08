@@ -42,6 +42,7 @@ export class LoginComponent {
           const user = JSON.parse(localStorage.getItem('user')!);
           setTimeout(() => {
             if (user?.is_staff) {
+        
               this.router.navigate(['/home']);
             } else {
               this.router.navigate(['/home']);
