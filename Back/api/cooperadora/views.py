@@ -20,12 +20,45 @@ from django.http import HttpResponse
 from openpyxl.styles import Font, PatternFill
 from collections import defaultdict
 from decimal import Decimal
+import mercadopago
+
+
+# preferencia de pago
+@api_view(['GET'])
+def create_preference(request):
+    sdk = mercadopago.SDK("APP_USR-2917072349699367-041811-9a5d9ca08b6a89b5375e0da9bdf07012-2319050859")  # Usá tu Access Token
+
+    preference_data = {
+        "items": [
+            {
+                "title": "Servicio comprado",
+                "quantity": 1,
+                "unit_price": 1500.00
+            }
+        ],
+        "back_urls": {
+            "success": "https://tusitio.com/success",
+            "failure": "https://tusitio.com/failure",
+            "pending": "https://tusitio.com/pending"
+        },
+        "auto_return": "approved"
+    }
+
+    preference_response = sdk.preference().create(preference_data)
+    preference = preference_response["response"]
+
+    return JsonResponse({"init_point": preference["init_point"]})
+
+   
+ 
+from rest_framework.exceptions import ValidationError
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+
     
 # permisos para el admin
 class IsAdminUser(permissions.BasePermission):

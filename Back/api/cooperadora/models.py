@@ -22,12 +22,6 @@ class Product(models.Model):
     def __str__(self):
         return f"Producto: {self.name}, Precio: ${self.price}, Imagen: {self.image}"
 
-class User(models.Model):
-    username = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return f"Usuario: {self.username}, Contraseña: {self.password}"
 
 
 # Definición del modelo Order

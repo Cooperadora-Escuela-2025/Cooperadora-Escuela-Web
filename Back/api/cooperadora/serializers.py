@@ -48,7 +48,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 
             return instance
         
-        
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
