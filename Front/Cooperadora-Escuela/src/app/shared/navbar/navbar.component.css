@@ -6,14 +6,16 @@
     align-items: center;
   }
   
-#botonnav{
+.buttonnav{
     text-align: center;
     text-decoration: none;
     padding: 0 30px;
     color: white;
+    transition: color 0.3s ease;
+  /* transition: font-size 0.2s ease; */
 }
   
   .buttonnav:hover {
-    background-color: #351616;
+    color: grey;
   }
   
