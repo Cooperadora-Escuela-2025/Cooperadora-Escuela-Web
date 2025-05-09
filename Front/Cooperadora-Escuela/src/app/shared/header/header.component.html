@@ -7,31 +7,38 @@
             </div>
 
             
-      <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center">
+        <!-- Menú de perfil -->
+        <div class="d-flex align-items-center me-3" *ngIf="menuProfile">
+  
+        <div class="dropdown me-3">
+      <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" 
+       href="#" 
+       role="button" 
+       id="dropdownUser" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false">
+      <!-- icono de usuario -->
+      <i class="fas fa-user-circle fa-2x me-2"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
 
-        <!-- Menú perfil -->
-        <div class="dropdown me-3" *ngIf="menuProfile">
-          <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-             href="#"
-             role="button"
-             id="dropdownUser"
-             data-bs-toggle="dropdown"
-             aria-expanded="false">
-            <i class="fas fa-user-circle fa-2x"></i>
-           
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-            <!-- Visible solo para admins -->
-    <li *ngIf="isAdminUser">
-      <a class="dropdown-item" [routerLink]="['/list-users']">Panel de administrador</a>
-    </li>
-            <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
-            <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
-          </ul>
-        </div>
+      <!-- Visible solo para admins -->
+      <li *ngIf="isAdminUser">
+        <a class="dropdown-item" [routerLink]="['/admin-panel']">Panel de administrador</a>
+      </li>
 
-       
-        <i class="bi bi-cart-fill text-white fs-4" style="cursor: pointer;"></i>
+      <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
+      <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
+    </ul>
+  </div>
+
+  <!-- icono de carrito -->
+  <a class="d-flex align-items-center text-white text-decoration-none" href="#" role="button">
+    <i class="bi bi-cart-fill text-white fs-4 me-2" style="cursor: pointer;"></i>
+  </a>
+</div>
+
       </div>
         </div>
     </div>

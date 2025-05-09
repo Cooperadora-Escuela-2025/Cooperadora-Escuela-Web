@@ -6,7 +6,7 @@
                     <h2 class="card-title text-center">{{ isEdit ? 'Editar Producto' : 'Agregar Producto' }}</h2>
                 </div>
                 <div class="card-body">
-                    <form (ngSubmit)="saveProduct()">
+                    <form>
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
                             <input type="text" id="name" [(ngModel)]="product.name" name="name" class="form-control"

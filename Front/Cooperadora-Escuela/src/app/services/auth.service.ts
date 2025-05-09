@@ -27,7 +27,7 @@ export class AuthService {
       .pipe(
         tap(response => {
           //setUser para emitir el usuario logueado
-          this.setUser(response.user); // Usamos setUser para emitir el usuario logueado
+          this.setUser(response.user); 
           localStorage.setItem('access_token', response.access);
           localStorage.setItem('refresh', response.refresh);
         })
@@ -48,16 +48,19 @@ export class AuthService {
 
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user');//no muestra el menu si el user no esta logeado
+    // localStorage.removeItem('user_email');
+    // localStorage.removeItem('user_id');
+    localStorage.removeItem('user');
+    localStorage.removeItem('is_staff');
+    localStorage.removeItem('cart');
     this.currentUserSubject.next(null);
     window.location.href = '/login';
   }
 
   setUser(user: any): void {
-    localStorage.setItem('user', JSON.stringify(user)); // Guardamos el usuario en localStorage
-    this.currentUserSubject.next(user); // Emitimos el usuario a través del BehaviorSubject
+    
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
   }
 
   getUser(id: number): Observable<User> {
@@ -69,10 +72,14 @@ getUs(): Observable<any> {
 }
 
 
-getUserFromStorage(): any {
-  const user = localStorage.getItem('user');
-  return user ? JSON.parse(user) : null;
-}
+getUserFromStorage(): any | null {
+    const user = localStorage.getItem('user');
+    try {
+      return user ? JSON.parse(user) : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
 // para saber cuando entra el admin
 isAdmin(): boolean {

@@ -18,12 +18,7 @@ export class HeaderComponent {
   constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.authService.currentUser$.subscribe(user => {
-      this.menuProfile = user;
-    });
-   
-    // this.isAdminUser = this.authService.isAdmin();// solo lo ve el admin
-    this.authService.currentUser$.subscribe(user => {
+     this.authService.currentUser$.subscribe(user => {
       this.menuProfile = user;
       this.isAdminUser = user?.is_staff || false;
     });
@@ -31,8 +26,11 @@ export class HeaderComponent {
 
 
   logout(): void {
-    this.authService.logout();
+      this.authService.logout();
+    this.menuProfile = null;
+    this.router.navigate(['/login']); // redirige al login tras cerrar sesión
   }
+  
 
   getUserProfile(): void {
     this.authService.getUs().subscribe({

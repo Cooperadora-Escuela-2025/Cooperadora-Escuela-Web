@@ -11,22 +11,28 @@ import { ListUsersComponent } from './pages/list-users/list-users.component';
 import { ProductListComponent } from './pages/product-list/product-list.component';
 
 import { authGuard } from './guards/auth.guard';
+import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
+import { ProductFormComponent } from './pages/product-form/product-form.component';
+import { CartComponent } from './pages/cart/cart.component';
 
 export const routes: Routes = [
   // Rutas protegidas
   { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'about-us', component: AboutUsComponent,canActivate: [authGuard]  },
+  { path: 'contact', component: ContactComponent,canActivate: [authGuard]  },
+  { path: 'list-users', component: ListUsersComponent,canActivate: [authGuard]  },
+  { path: 'products', component: ProductListComponent,canActivate: [authGuard]  },
+  {path:'cart',component:CartComponent,canActivate: [authGuard]},
+  {path:'products-form',component:ProductFormComponent,canActivate: [authGuard] },
+  {path:'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
 
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'about-us', component: AboutUsComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'list-users', component: ListUsersComponent },
-  { path: 'products', component: ProductListComponent },
 
-  // Ruta no encontrada (opcional)
+  // Ruta no encontrada (opcional) aca iria la vista de error
   { path: '**', redirectTo: '/login' }
 ];
 
