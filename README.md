@@ -15,7 +15,7 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 # Proyecto Cooperadora Escuela 2025
 
 
-## Indice
+# Indice
 
 |Topic|Description|
 |---|---|
@@ -23,7 +23,6 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 |[Sprint 0](https://github.com/Cooperadora-Escuela-2025/.github/wiki/02-Sprint-0)|Resumen del Sprint 0|
 |[Sprint 1](https://github.com/Cooperadora-Escuela-2025/.github/wiki/03-Sprint-1)|Resumen del Sprint 1|
 |[Sprint 2](https://github.com/Cooperadora-Escuela-2025/.github/wiki/04-Sprint-2)|Resumen del Sprint 2|
-|[Dailys](https://github.com/Cooperadora-Escuela-2025/.github/wiki/05-Dailys)|Resumen de las Dailys|
 |[Proyecto](https://github.com/Cooperadora-Escuela-2025/.github/wiki/06-Proyecto)|Link al proyecto kanban|
 |[Requerimientos](https://github.com/Cooperadora-Escuela-2025/.github/wiki/07-Requerimientos)|Requerimientos Funcionales y No Funcionales|
 |[IEEE830](https://github.com/Cooperadora-Escuela-2025/.github/wiki/08-IEEE830)|Documentacion del IEEE830|
@@ -39,7 +38,6 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 | Nombre              | Rol        | Usuario de Github | Responsabilidad | Información de contacto          |
 |---------------------|------------|-------------------|-----------------|---------------------------------|
 | Rodrigo Leiva       | Developer / Scrum Master  | rodrileiv         | Developer       | rodrigoleiva1995@hotmail.com   |
-| Aisha Jennifer Amaya | Developer   | AishaAmaya             | Developer       | aishaamaya94@gmail.com         |
 | Estela Margarita Bravo | Developer  | Margarita-Bravo | Developer       | bravomargarita3329@gmail.com              |
 | Jonatan Ezequiel Acuña   | Developer  | yoniea       | Developer       | yae52735@gmail.com  |
 
