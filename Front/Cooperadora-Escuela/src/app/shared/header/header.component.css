@@ -1,11 +1,11 @@
 .logo {
     border-radius: 50%;
-    /* Hace que el logo sea circular */
+   
 }
 
 .btn-logout {
     margin-left: auto;
-    /* Empuja el botón hacia la derecha */
+   
     margin-right: 800rem;
-    /* Centra el botón */
+    
 }

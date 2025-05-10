@@ -6,11 +6,13 @@
             <h3 class="card-title text-center text-white">Registro</h3>
           </div>
           <div class="card-body p-4">
+              <strong>Importante:</strong> el <u>nombre y apellido</u> deben ser los del <strong>alumno</strong>, no los del tutor o padre.
+             
             <form (ngSubmit)="onRegister()" #registerForm="ngForm">
               <!-- Nombre y Apellido en la misma fila -->
               <div class="row">
                 <div class="col-md-6 mb-3">
-                  <label for="firstName" class="form-label">Nombre</label>
+                  <label for="firstName" class="form-label">Nombres</label>
                   <input [(ngModel)]="firstName" name="firstName" type="text" class="form-control" id="firstName"
                     required minlength="2" maxlength="30" #firstNameInput="ngModel" />
                   <div *ngIf="firstNameInput.invalid && firstNameInput.touched" class="text-danger">

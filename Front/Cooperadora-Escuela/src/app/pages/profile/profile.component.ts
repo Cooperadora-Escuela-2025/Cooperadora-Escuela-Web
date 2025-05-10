@@ -24,13 +24,13 @@ export class ProfileComponent {
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
-      first_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      last_name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      first_name: ['', [Validators.minLength(2), Validators.maxLength(30)]],
+      last_name: ['', [Validators.minLength(2), Validators.maxLength(30)]],
       email: [{ value: '', disabled: true }],
-      dni: ['', [Validators.required, Validators.min(1000000), Validators.max(99999999)]],
-      shift: ['', Validators.required],
-      grade_year: ['', Validators.required],
-      telephone: ['', [Validators.required, Validators.pattern(/^\d{7,15}$/)]]
+      dni: ['', [Validators.min(1000000), Validators.max(99999999)]],
+      shift: [''],
+      grade_year: [''],
+      telephone: ['', [Validators.pattern(/^\d{7,15}$/)]]
     });
     this.loadProfile();
   }

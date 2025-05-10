@@ -75,13 +75,20 @@ export class ListUsersComponent {
 
   //elimina un usuario
   deleteUser(userId: number): void {
-    this.profileService.deleteProfile(userId).subscribe({
-      next: () => {
-        this.users = this.users.filter(u => u.id !== userId);  
-      },
-      error: (err) => {
-        console.error('Error al eliminar el usuario:', err);
-      }
-    });
+     const confirmado = confirm('¿Estás seguro de que querés eliminar este usuario? Esta acción no se puede deshacer.');
+       console.log('Confirmación:', confirmado); 
+
+    if (!confirmado) {
+    return; // si el admin cancela no se elimina
+  }
+
+  this.profileService.deleteProfile(userId).subscribe({
+    next: () => {
+      this.users = this.users.filter(u => u.id !== userId);
+    },
+    error: (err) => {
+      console.error('Error al eliminar el usuario:', err);
+    }
+  });
   }
 }

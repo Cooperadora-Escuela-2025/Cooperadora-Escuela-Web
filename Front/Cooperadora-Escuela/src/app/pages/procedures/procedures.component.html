@@ -1,0 +1,54 @@
+
+  <div class="container mt-5" >
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow rounded-4">
+          <div class="card-body p-4">
+
+           
+            <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']">Volver</button>
+
+           
+            <h2>Tus trámites</h2>
+
+           
+            <ul>
+              <li *ngFor="let procedure of procedures" class="mb-3">
+                <div class="d-flex flex-column">
+                  <strong>Tipo de tramite:{{ procedure.procedure_type }}</strong>
+                  <small>Descripción: {{ procedure.description }}</small>
+                  <small>Fecha de inicio: {{ procedure.request_date }}</small>
+                  <small>Estado: {{ procedure.status }}</small>
+                </div>
+              </li>
+            </ul>
+
+            
+            <h3>Solicitar un nuevo trámite</h3>
+            <form (ngSubmit)="createProcedure()">
+              <div class="mb-3">
+                <label for="procedureType" class="form-label">Tipo de trámite:</label>
+                <select id="procedureType" [(ngModel)]="newProcedure.procedure_type" name="procedure_type" class="form-select" required>
+                  <option value="certificate">Certificado de estudiante regular</option>
+                  <option value="reincorporation">Reincorporación</option>
+                  <option value="exam_board">Mesa de examen</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">Descripción:</label>
+                <textarea id="description" [(ngModel)]="newProcedure.description" name="description" class="form-control" required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-success">Solicitar trámite</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+

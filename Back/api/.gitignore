@@ -45,3 +45,6 @@ local_settings.py
 # __angular__ u otros proyectos frontales dentro
 frontend/node_modules/
 frontend/dist/
+
+# evita migraciones
+Back/api/cooperadora/migrations/

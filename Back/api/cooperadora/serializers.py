@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Order, OrderProduct, Product, User,Profile
+from .models import Order, OrderProduct, Procedure, Product, User,Profile
 
-
+# serializer usuario
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
             'email': {'required': True},
         }
 
+# serializer perfil
 class ProfileSerializer(serializers.ModelSerializer):
 # Campos del modelo User
     first_name = serializers.CharField(source='user.first_name')  # Eliminado read_only=True
@@ -21,7 +22,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['id', 'user', 'first_name', 'last_name', 'email', 'dni', 'shift', 'grade_year', 'telephone']
         read_only_fields = ['user', 'email']  # 'user' y 'email' son solo lectura
-
         extra_kwargs = {
             'dni': {'required': False},
             'shift': {'required': False},
@@ -31,35 +31,36 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         user = instance.user
-
         user_data = validated_data.pop('user', {})
 
-        # Si vienen datos para user.first_name o user.last_name, actualizarlos
         if 'first_name' in user_data:
             user.first_name = user_data['first_name']
         if 'last_name' in user_data:
             user.last_name = user_data['last_name']
             user.save()
 
-    # Actualizar los campos del modelo Profile (lo que queda en validated_data)
+    # actualizar los campos del modelo Profile 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
             instance.save()
-
             return instance
         
+# serializer producto      
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
 
+
+# serializer ordenproducto
 class OrderProductSerializer(serializers.ModelSerializer):
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # Usar PrimaryKeyRelatedField
 
     class Meta:
         model = OrderProduct
         fields = ['product', 'unit_price', 'quantity']
-       
+
+# serializer orden      
 class OrderSerializer(serializers.ModelSerializer):
     products = OrderProductSerializer(many=True)  # Usar OrderProductSerializer para los productos
 
@@ -76,3 +77,11 @@ class OrderSerializer(serializers.ModelSerializer):
             OrderProduct.objects.create(order=order, **product_data)
 
         return order
+    
+    
+# serializer tramite
+class ProcedureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Procedure
+        fields = '__all__'
+        read_only_fields = ['user', 'request_date']
