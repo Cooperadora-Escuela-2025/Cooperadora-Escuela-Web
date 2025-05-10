@@ -47,7 +47,7 @@ export class LoginComponent {
             } else {
               this.router.navigate(['/home']);
             }
-          }, 1000); 
+          }, 2000); 
         },
         error: err => {
           this.errorMessage = 'Correo o contraseña incorrectos.';

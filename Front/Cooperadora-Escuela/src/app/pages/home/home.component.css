@@ -1,5 +1,5 @@
 .custom-jumbotron {
-    background-image: url('../../../assets/Fondo-Home.jpg');
+    background-image: url('/assets/Fondo-Home.jpg');
     background-size: cover; 
     background-position: center; 
     color: white; 
