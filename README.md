@@ -19,17 +19,14 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 
 |Topic|Description|
 |---|---|
-|[Team](https://github.com/Cooperadora-Escuela-2025/.github/wiki/01-Team)|Integrantes del grupo|
-|[Sprint 0](https://github.com/Cooperadora-Escuela-2025/.github/wiki/02-Sprint-0)|Resumen del Sprint 0|
-|[Sprint 1](https://github.com/Cooperadora-Escuela-2025/.github/wiki/03-Sprint-1)|Resumen del Sprint 1|
-|[Sprint 2](https://github.com/Cooperadora-Escuela-2025/.github/wiki/04-Sprint-2)|Resumen del Sprint 2|
-|[Proyecto](https://github.com/Cooperadora-Escuela-2025/.github/wiki/06-Proyecto)|Link al proyecto kanban|
-|[Requerimientos](https://github.com/Cooperadora-Escuela-2025/.github/wiki/07-Requerimientos)|Requerimientos Funcionales y No Funcionales|
-|[IEEE830](https://github.com/Cooperadora-Escuela-2025/.github/wiki/08-IEEE830)|Documentacion del IEEE830|
-|[Testing](https://github.com/Cooperadora-Escuela-2025/.github/wiki/09-Testing)|Todo lo de testing del proyecto|
-|[Videos](https://github.com/Cooperadora-Escuela-2025/.github/wiki/10-Videos)|Todos los videos de los proyectos|
-|[Retrospective Sprint](https://github.com/Cooperadora-Escuela-2025/.github/wiki/11-Retrospective-Sprint)|Tablero Ideaboard|
-|[Releases](https://github.com/Cooperadora-Escuela-2025/.github/wiki/12-Releases)|Releases de la APP y WEB|
+|[Team](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Team)|Integrantes del grupo|
+|[Sprint 0](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-0)|Resumen del Sprint 0|
+|[Sprint 1](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-1)|Resumen del Sprint 1|
+|[Sprint 2](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-2)|Resumen del Sprint 2|
+|[Requerimientos](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Requerimientos)|Requerimientos Funcionales y No Funcionales|
+|[IEEE830](https://github.com/Cooperadora-Escuela-2025/.github/wiki/IEEE830)|Documentacion del IEEE830|
+|[Testing](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Testing)|Testing del proyecto|
+|[Releases](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Releases)|Releases de la APP y WEB|
 
 ***
 
