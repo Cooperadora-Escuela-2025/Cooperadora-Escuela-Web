@@ -14,6 +14,7 @@ import { authGuard } from './guards/auth.guard';
 import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 import { ProductFormComponent } from './pages/product-form/product-form.component';
 import { CartComponent } from './pages/cart/cart.component';
+import { CheckoutComponent } from './pages/checkout/checkout.component'
 
 export const routes: Routes = [
   // Rutas protegidas
@@ -23,9 +24,10 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent,canActivate: [authGuard]  },
   { path: 'list-users', component: ListUsersComponent,canActivate: [authGuard]  },
   { path: 'products', component: ProductListComponent,canActivate: [authGuard]  },
-  {path:'cart',component:CartComponent,canActivate: [authGuard]},
-  {path:'products-form',component:ProductFormComponent,canActivate: [authGuard] },
-  {path:'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
+  { path:'cart',component:CartComponent,canActivate: [authGuard]},
+  { path:'products-form',component:ProductFormComponent,canActivate: [authGuard] },
+  { path:'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
+  { path:'checkout',component:CheckoutComponent,canActivate: [authGuard] },
 
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },

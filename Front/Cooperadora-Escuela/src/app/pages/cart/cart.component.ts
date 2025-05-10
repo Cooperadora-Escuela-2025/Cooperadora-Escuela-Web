@@ -1,22 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrls: ['./cart.component.css']
 })
 export class CartComponent implements OnInit {
   cart: Product[] = [];
 
   constructor(
     private cartService: CartService,
-    private http: HttpClient // Inyección de HttpClient para llamadas HTTP
+    private http: HttpClient, // Inyección de HttpClient para llamadas HTTP
+    private router: Router // Asegúrate de inyectar Router aquí
   ) {}
 
   ngOnInit(): void {
@@ -44,19 +46,8 @@ export class CartComponent implements OnInit {
   }
 
   // Método para finalizar la compra
-  checkout(): void {
-    const url = 'http://localhost:8000/api/registrar-compra/'; // Ajustá a tu URL real
-
-    this.http.post(url, this.cart).subscribe({
-      next: (response) => {
-        console.log('Compra enviada:', response);
-        alert('Gracias por tu compra. ¡Tu pedido fue enviado al servidor!');
-        this.clearCart();
-      },
-      error: (error) => {
-        console.error('Error al registrar la compra:', error);
-        alert('Ocurrió un error al enviar la compra.');
-      }
-    });
+  goToCheckout(): void {
+    this.router.navigate(['/checkout']); // Aquí ya funciona el router
   }
 }
+

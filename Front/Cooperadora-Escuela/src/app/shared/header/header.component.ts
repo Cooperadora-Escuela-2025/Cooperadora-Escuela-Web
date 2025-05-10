@@ -3,24 +3,35 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../services/profile.service';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterModule,CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
   menuProfile: any;
   isAdminUser: boolean = false;
+  cartItemCount: number = 0;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
-     this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.subscribe(user => {
       this.menuProfile = user;
       this.isAdminUser = user?.is_staff || false;
+    });
+
+    this.cartService.cart$.subscribe((cart: Product[]) => {
+      this.cartItemCount = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     });
   }
 

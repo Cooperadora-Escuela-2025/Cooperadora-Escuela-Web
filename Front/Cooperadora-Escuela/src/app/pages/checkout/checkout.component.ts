@@ -1,25 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'
-import { Product } from '../product.model';
-import { ApiService } from '../api.service';
-import { CartService } from '../services/cart.service';
+import { FormsModule } from '@angular/forms';
+import { Product } from '../../models/product.model';
+import { ApiService } from '../../services/api.service';
+import { CartService } from '../../services/cart.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FooterComponent } from "../footer/footer.component";
-import { HeaderComponent } from "../header/header.component";
-
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FooterComponent, HeaderComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './checkout.component.html',
-  styleUrl: './checkout.component.css'
+  styleUrls: ['./checkout.component.css']
 })
-
 export class CheckoutComponent implements OnInit {
-  cart: any[] = [];
+  cart: Product[] = [];
   total: number = 0;
   name: string = '';
   surname: string = '';
@@ -31,11 +27,15 @@ export class CheckoutComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private http: HttpClient
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.cart = this.cartService.getCart();
-    this.total = this.cart.reduce(
+    this.total = this.calculateTotal();
+  }
+
+  calculateTotal(): number {
+    return this.cart.reduce(
       (sum, product) => sum + product.price * (product.quantity || 1),
       0
     );
@@ -48,14 +48,14 @@ export class CheckoutComponent implements OnInit {
       dni: this.dni,
       total: this.total,
       payment_method: this.paymentMethod,
-      products: this.cart.map((product) => ({
-        product: product.id, // Enviar el ID del producto
-        unit_price: product.price, // Enviar el precio unitario
-        quantity: product.quantity || 1, // Enviar la cantidad
+      products: this.cart.map(product => ({
+        product: product.id,
+        unit_price: product.price,
+        quantity: product.quantity || 1,
       })),
     };
 
-    console.log('Datos enviados al backend:', order); // <-- Agrega este console.log
+    console.log('Datos enviados al backend:', order);
 
     this.apiService.createOrder(order).subscribe({
       next: () => {
@@ -75,7 +75,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   downloadExcel(): void {
-    this.http.get('http://localhost:8000/download-orders/', { responseType: 'blob' })
+    this.http.get('http://localhost:8000/orders/', { responseType: 'blob' })
       .subscribe((response: Blob) => {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
