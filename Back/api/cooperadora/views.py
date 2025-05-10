@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .models import Profile,User,Product, Order, OrderProduct
-from .serializers import UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
+from .models import Profile, Procedure,User,Product, Order, OrderProduct
+from .serializers import ProcedureSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -49,29 +49,31 @@ def create_preference(request):
 
     return JsonResponse({"init_point": preference["init_point"]})
 
-   
- 
 from rest_framework.exceptions import ValidationError
+#fin preferencia de pago
 
 
+# vits usurio
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
-
+#fin vits usurio
+    
     
 # permisos para el admin
 class IsAdminUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_staff
-    
-    # perfil de usuario  
+#fin permisos para el admin  
+
+ 
+# perfil de usuario  
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])  #solo usuarios autenticados pueden acceder
 def profile_view(request):
     user = request.user 
-    try:
-        
+    try: 
         profile = request.user.profile  
     except Profile.DoesNotExist:
         return Response({'error': 'Perfil no encontrado'}, status=404)
@@ -88,6 +90,7 @@ def profile_view(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
+#fin perfil de usuario  
 
 
 # iniciar sesion
@@ -133,8 +136,10 @@ def login(request):
             'is_superuser': user.is_superuser 
         }
     })
-    
-    # registro
+#fin iniciar sesion
+
+
+# registro
 User = get_user_model()
 @csrf_exempt
 @api_view(['POST'])
@@ -183,6 +188,8 @@ def register(request):
 
     else:
         return JsonResponse({"error": "Método no permitido."}, status=405)
+#fin registro
+
 
 # producto
 class ProductViewSet(viewsets.ModelViewSet):
@@ -193,12 +200,17 @@ class ProductViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+#fin producto
 
 
+# orden
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    
+# fin orden
+
+
+# checkout   
 class CheckoutView(APIView):
     def post(self, request):
         serializer = OrderSerializer(data=request.data)  # Validar los datos de la orden
@@ -206,8 +218,10 @@ class CheckoutView(APIView):
             serializer.save()  # Guardar la orden y los productos asociados
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# fin checkout  
 
 
+# descargar excel 
 def download_orders_excel(request):
     # Crear un nuevo libro de Excel
     wb = Workbook()
@@ -294,6 +308,8 @@ def download_orders_excel(request):
     response['Content-Disposition'] = 'attachment; filename=ordenes.xlsx'
 
     return response
+# fin descargar excel 
+
 
 
 # vista para que el admin realice el crud de usuarios
@@ -328,7 +344,7 @@ def all_profile_view(request, pk=None):
         
         serializer = ProfileSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
-            # Guardamos el perfil y actualizamos los campos del usuario (first_name, last_name)
+
             user = profile.user
             user.first_name = serializer.validated_data.get('first_name', user.first_name)
             user.last_name = serializer.validated_data.get('last_name', user.last_name)
@@ -349,4 +365,17 @@ def all_profile_view(request, pk=None):
         profile.delete()
         user.delete()
         return Response({'message': 'Perfil y usuario eliminados exitosamente'}, status=status.HTTP_204_NO_CONTENT)
+# fin vista para que el admin realice el crud de usuarios
 
+
+# tramite
+class ProcedureViewSet(viewsets.ModelViewSet):
+    serializer_class = ProcedureSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Procedure.objects.filter(user=self.request.user)  # Cambié 'usuario' por 'user'
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+# fin tramite

@@ -8,7 +8,7 @@
 
             
     <div class="d-flex align-items-center">
-        <!-- Menú de perfil -->
+        <!-- menu de perfil -->
         <div class="d-flex align-items-center me-3" *ngIf="menuProfile">
   
         <div class="dropdown me-3">
@@ -23,7 +23,7 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
 
-      <!-- Visible solo para admins -->
+      <!-- visible solo para admins -->
       <li *ngIf="isAdminUser">
         <a class="dropdown-item" [routerLink]="['/admin-panel']">Panel de administrador</a>
       </li>
@@ -33,7 +33,7 @@
     </ul>
   </div>
 
-<!-- Ícono del carrito con cantidad -->
+<!-- icono del carrito con cantidad -->
 <a class="d-flex align-items-center text-white text-decoration-none position-relative"
    [routerLink]="['/cart']"
    style="cursor: pointer;">

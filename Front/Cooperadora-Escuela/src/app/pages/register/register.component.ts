@@ -44,7 +44,8 @@ export class RegisterComponent {
     this.authService.register(userData).subscribe({
       next: () => {
         this.successMessage = 'Te registraste correctamente 🎉. Redirigiendo al login...';
-        setTimeout(() => this.router.navigate(['/login']), 2000); 
+        setTimeout(() =>{ this.router.navigate(['/login'], { queryParams: { email: this.email } });}, 2000);
+        
       },
       error: (error) => {
         if (error.status === 400 && error.error) {

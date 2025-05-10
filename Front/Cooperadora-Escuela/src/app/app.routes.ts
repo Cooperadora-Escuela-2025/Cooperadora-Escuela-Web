@@ -15,6 +15,7 @@ import { AdminPanelComponent } from './pages/admin-panel/admin-panel.component';
 import { ProductFormComponent } from './pages/product-form/product-form.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component'
+import { ProceduresComponent } from './pages/procedures/procedures.component';
 
 export const routes: Routes = [
   // Rutas protegidas
@@ -28,13 +29,13 @@ export const routes: Routes = [
   { path:'products-form',component:ProductFormComponent,canActivate: [authGuard] },
   { path:'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
   { path:'checkout',component:CheckoutComponent,canActivate: [authGuard] },
-
+  { path:'procedure',component:ProceduresComponent},
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 
-  // Ruta no encontrada (opcional) aca iria la vista de error
+  //  aca iria la ruta de error
   { path: '**', redirectTo: '/login' }
 ];
 

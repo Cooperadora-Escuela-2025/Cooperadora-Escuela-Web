@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit  {
   email: string = '';
   password: string = '';
   errorMessage: string = '';
@@ -23,13 +23,24 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
+
+  // me trae el correo lugo de registrarme
+  ngOnInit(): void {
+  this.route.queryParams.subscribe(params => {
+    const emailFromRegister = params['email'];
+    if (emailFromRegister) {
+      this.loginForm.get('email')?.setValue(emailFromRegister);
+    }
+  });
+}
 
   onSubmit() {
     this.errorMessage = '';
