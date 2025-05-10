@@ -33,10 +33,17 @@
     </ul>
   </div>
 
-  <!-- icono de carrito -->
-  <a class="d-flex align-items-center text-white text-decoration-none" href="#" role="button">
-    <i class="bi bi-cart-fill text-white fs-4 me-2" style="cursor: pointer;"></i>
-  </a>
+<!-- Ícono del carrito con cantidad -->
+<a class="d-flex align-items-center text-white text-decoration-none position-relative"
+   [routerLink]="['/cart']"
+   style="cursor: pointer;">
+  <i class="bi bi-cart-fill text-white fs-4 me-2"></i>
+  <span *ngIf="cartItemCount > 0"
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    {{ cartItemCount }}
+  </span>
+</a>
+
 </div>
 
       </div>
