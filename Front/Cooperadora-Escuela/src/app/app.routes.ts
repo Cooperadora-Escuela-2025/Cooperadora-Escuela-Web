@@ -16,6 +16,8 @@ import { ProductFormComponent } from './pages/product-form/product-form.componen
 import { CartComponent } from './pages/cart/cart.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component'
 import { ProceduresComponent } from './pages/procedures/procedures.component';
+import { Error404Component } from './pages/error404/error404.component'; 
+
 
 export const routes: Routes = [
   // Rutas protegidas
@@ -36,7 +38,7 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
 
   //  aca iria la ruta de error
-  { path: '**', redirectTo: '/login' }
+  { path: '**', component:Error404Component },
 ];
 
 @NgModule({
