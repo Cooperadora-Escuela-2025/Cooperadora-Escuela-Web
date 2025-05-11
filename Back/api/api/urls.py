@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
 from cooperadora import views
-from cooperadora.views import ProcedureViewSet,all_profile_view, profile_view,login,register
+from cooperadora.views import ProcedureViewSet,all_profile_view, profile_view,login,register, register_user_by_admin
 from rest_framework_simplejwt import views as jwt_views
 from cooperadora.views import ProductViewSet, UserViewSet, OrderViewSet, CheckoutView, download_orders_excel,create_preference
 
@@ -28,6 +28,7 @@ urlpatterns = [
     path('download-orders/', download_orders_excel, name='download_orders'),
     path('all-users/', all_profile_view, name='profile-list'),  
     path('all-users/<int:pk>/', all_profile_view, name='profile-detail') ,
+    path('create-user/', register_user_by_admin, name='register_user_by_admin'),
     path('mercadopago/', create_preference, name='mercadopago'),
     # path('procedure',Procedure.as_view(),name='procedure'),
     #rutas para obtener el token de acceso y el token de actualización

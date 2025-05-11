@@ -57,5 +57,13 @@ deleteProfile(id: number): Observable<any> {
   return this.http.delete<any>(`${this.baseUrl}all-users/${id}/`, { headers });
 }
 
+// crea un nuevo usuario
+createUserByAdmin(userData: any, token: string) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}` 
+    });
 
+    return this.http.post(`${this.baseUrl}create-user/`, userData, { headers });
+  }
 }

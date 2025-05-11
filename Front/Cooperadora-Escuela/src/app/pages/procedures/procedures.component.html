@@ -11,13 +11,15 @@
            
             <h2>Tus trámites</h2>
 
-           
+           <p class="text-secondary fst-italic mb-3">
+  En esta sección podrás gestionar certificados de alumno regular, reincorporaciones, mesas de examen y otros trámites escolares.
+</p>
             <ul>
-              <li *ngFor="let procedure of procedures" class="mb-3">
+              <li *ngFor="let procedure of procedures" class="mb-3 border rounded-3 p-2">
                 <div class="d-flex flex-column">
-                  <strong>Tipo de tramite:{{ procedure.procedure_type }}</strong>
+                <strong>Tipo de trámite: {{ procedure.procedure_type_display || procedure.procedure_type }}</strong>
                   <small>Descripción: {{ procedure.description }}</small>
-                  <small>Fecha de inicio: {{ procedure.request_date }}</small>
+                  <small>Fecha de inicio: {{ procedure.request_date| date:'dd/MM/yyyy HH:mm' }}</small>
                   <small>Estado: {{ procedure.status }}</small>
                 </div>
               </li>
@@ -29,10 +31,10 @@
               <div class="mb-3">
                 <label for="procedureType" class="form-label">Tipo de trámite:</label>
                 <select id="procedureType" [(ngModel)]="newProcedure.procedure_type" name="procedure_type" class="form-select" required>
-                  <option value="certificate">Certificado de estudiante regular</option>
-                  <option value="reincorporation">Reincorporación</option>
-                  <option value="exam_board">Mesa de examen</option>
-                  <option value="other">Otro</option>
+                  <option value="certificado">Certificado de estudiante regular</option>
+                  <option value="reincorporacion">Reincorporación</option>
+                  <option value="mesa_de_examen">Mesa de examen</option>
+                  <option value="otro">Otro</option>
                 </select>
               </div>
 
@@ -43,6 +45,9 @@
 
               <button type="submit" class="btn btn-success">Solicitar trámite</button>
             </form>
+            <div *ngIf="successMessageShown" class="alert alert-success mt-3" role="alert">
+  Tu trámite fue enviado con éxito. Recibirás una respuesta a la brevedad en tu correo electrónico.
+</div>
 
           </div>
         </div>

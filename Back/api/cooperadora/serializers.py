@@ -14,20 +14,21 @@ class UserSerializer(serializers.ModelSerializer):
 # serializer perfil
 class ProfileSerializer(serializers.ModelSerializer):
 # Campos del modelo User
-    first_name = serializers.CharField(source='user.first_name')  # Eliminado read_only=True
-    last_name = serializers.CharField(source='user.last_name')    # Eliminado read_only=True
-    email = serializers.EmailField(source='user.email', read_only=True)  # Solo lectura para email
+    first_name = serializers.CharField(source='user.first_name')  
+    last_name = serializers.CharField(source='user.last_name')    
+    email = serializers.EmailField(source='user.email', read_only=True)  
 
     class Meta:
         model = Profile
         fields = ['id', 'user', 'first_name', 'last_name', 'email', 'dni', 'shift', 'grade_year', 'telephone']
-        read_only_fields = ['user', 'email']  # 'user' y 'email' son solo lectura
+        read_only_fields = ['user', 'email']  
         extra_kwargs = {
             'dni': {'required': False},
             'shift': {'required': False},
             'grade_year': {'required': False},
             'telephone': {'required': False},
         }
+        
 
     def update(self, instance, validated_data):
         user = instance.user
@@ -42,8 +43,10 @@ class ProfileSerializer(serializers.ModelSerializer):
     # actualizar los campos del modelo Profile 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-            instance.save()
-            return instance
+            
+        instance.save()
+        return instance
+        
         
 # serializer producto      
 class ProductSerializer(serializers.ModelSerializer):
@@ -81,7 +84,37 @@ class OrderSerializer(serializers.ModelSerializer):
     
 # serializer tramite
 class ProcedureSerializer(serializers.ModelSerializer):
+    procedure_type_display = serializers.CharField(source='get_procedure_type_display', read_only=True)
+
     class Meta:
         model = Procedure
         fields = '__all__'
         read_only_fields = ['user', 'request_date']
+        
+        
+# serializer para admin
+class AdminUserCreationSerializer(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("Las contraseñas no coinciden.")
+        if User.objects.filter(email=data['email']).exists():
+            raise serializers.ValidationError("El email ya está registrado.")
+        return data
+
+    def create(self, validated_data):
+        validated_data.pop('password2')  
+        user = User.objects.create_user(
+            username=validated_data['email'],
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            password=validated_data['password']
+        )
+        Profile.objects.create(user=user)
+        return user
