@@ -16,6 +16,14 @@ export class ListUsersComponent {
   editingUserId: number | null = null;  
   editData: any = {};  
 
+  formData = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    password2: ''
+  };
+
   constructor(
     private profileService: ProfileService, 
     private router: Router
@@ -23,6 +31,26 @@ export class ListUsersComponent {
 
   ngOnInit(): void {
     this.loadUsers();  
+  }
+
+   crearUsuario() {
+    const token = localStorage.getItem('access_token'); // o como guardes el JWT del admin
+    if (!token) {
+      alert('No estás autenticado.');
+      return;
+    }
+    this.profileService.createUserByAdmin(this.formData, token).subscribe({
+      next: (res) => {
+        console.log(res);
+        alert('Usuario creado con éxito.');
+         this.loadUsers();
+         this.resetFormulario();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Ocurrió un error al crear el usuario.');
+      }
+    });
   }
 
   // para cargar todos los usuarios desde el backend
@@ -42,10 +70,13 @@ export class ListUsersComponent {
   editUser(userId: number): void {
     this.editingUserId = userId;  
     const user = this.users.find(u => u.id === userId);
+    console.log(this.users+'aqui');
     if (user) {
       this.editData = { ...user };  
+      console.log(this.editData);
     }
   }
+  
 
   //guarda los cambios realizados a un usuario
   saveUser(): void {
@@ -57,6 +88,7 @@ export class ListUsersComponent {
           const index = this.users.findIndex(u => u.id === updatedUser.id);
           if (index !== -1) {
             this.users[index] = updatedUser;
+            console.log('Campos editados:', this.editData);
           }
           this.editingUserId = null;  
         },
@@ -91,4 +123,15 @@ export class ListUsersComponent {
     }
   });
   }
+
+resetFormulario() {
+  this.formData = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    password2: ''
+  };
+}
+
 }

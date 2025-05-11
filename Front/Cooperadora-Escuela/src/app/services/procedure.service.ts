@@ -12,12 +12,12 @@ export class ProcedureService {
 
   constructor(private http: HttpClient) { }
 
-  // Obtener todos los trámites de un usuario
+  
   getProcedures(): Observable<Procedure[]> {
     return this.http.get<Procedure[]>(this.url+'procedure/');
   }
 
-  // Crear un nuevo trámite
+ 
   createProcedure(procedure: Procedure): Observable<Procedure> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`

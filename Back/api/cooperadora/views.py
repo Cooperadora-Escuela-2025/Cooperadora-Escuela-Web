@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from .models import Profile, Procedure,User,Product, Order, OrderProduct
-from .serializers import ProcedureSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
+from .serializers import AdminUserCreationSerializer, ProcedureSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -329,12 +329,6 @@ def all_profile_view(request, pk=None):
             serializer = ProfileSerializer(profiles, many=True)
             return Response(serializer.data)
 
-    elif request.method == 'POST':
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'PUT':
         try:
@@ -365,6 +359,16 @@ def all_profile_view(request, pk=None):
         profile.delete()
         user.delete()
         return Response({'message': 'Perfil y usuario eliminados exitosamente'}, status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def register_user_by_admin(request):
+    serializer = AdminUserCreationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Usuario creado exitosamente."}, status=201)
+    return Response(serializer.errors, status=400)
+    
 # fin vista para que el admin realice el crud de usuarios
 
 

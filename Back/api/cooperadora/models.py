@@ -58,10 +58,10 @@ class OrderProduct(models.Model):
 # definicion de modelo tramite
 class Procedure(models.Model):
     PROCEDURE_TYPE_CHOICES = [
-        ('certificate', 'Certificado de estudiante Regular'),
-        ('reincorporation', 'Reincorporación'),
-        ('exam_board', 'Mesa de Examen'),
-        ('other', 'Otro'),
+        ('certificado', 'Certificado de estudiante Regular'),
+        ('reincorporacion', 'Reincorporación'),
+        ('mesa de examen', 'Mesa de Examen'),
+        ('otro', 'Otro'),
     ]
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)  

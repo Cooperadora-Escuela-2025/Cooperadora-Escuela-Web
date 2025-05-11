@@ -1,11 +1,36 @@
 <main>
-    <button class="btn btn-outline-secondary mb-3" [routerLink]="['/admin-panel']">Volver</button>
-<div class="usuarios-container" >
+  <button class="btn btn-outline-secondary mb-3" [routerLink]="['/admin-panel']">Volver</button>
+  <div class="usuarios-container">
+    <h2>Crear Usuarios</h2>
+    <form (ngSubmit)="crearUsuario()" class="mb-4">
+      <div class="row g-2 mb-2">
+        <div class="col-md">
+          <input type="text" placeholder="Nombre" [(ngModel)]="formData.first_name" name="first_name" class="form-control" required>
+        </div>
+        <div class="col-md">
+          <input type="text" placeholder="Apellido" [(ngModel)]="formData.last_name" name="last_name" class="form-control" required>
+        </div>
+        <div class="col-md">
+          <input type="email" placeholder="Email" [(ngModel)]="formData.email" name="email" class="form-control" required>
+        </div>
+      </div>
+      <div class="row g-2 mb-2">
+        <div class="col-md">
+          <input type="password" placeholder="Contraseña" [(ngModel)]="formData.password" name="password" class="form-control" required>
+        </div>
+        <div class="col-md">
+          <input type="password" placeholder="Confirmar Contraseña" [(ngModel)]="formData.password2" name="password2" class="form-control" required>
+        </div>
+        <div class="col-md-auto">
+          <button type="submit" class="btn btn-success w-100">Crear Usuario</button>
+        </div>
+      </div>
+    </form>
+
     <h2>Lista de Usuarios</h2>
     <table>
       <thead>
         <tr>
-        <!-- <th>ID</th> -->
           <th>Nombre</th>
           <th>Apellido</th>
           <th>Email</th>
@@ -17,19 +42,15 @@
       </thead>
       <tbody>
         <tr *ngFor="let user of users">
-          <!-- mostrar los datos cuando no se esta editando -->
-          <!-- <td *ngIf="editingUserId !== user.id">{{ user.id }}</td> -->
+          <!--ver datos mientras se edita -->
           <td *ngIf="editingUserId !== user.id">{{ user.first_name }}</td>
           <td *ngIf="editingUserId !== user.id">{{ user.last_name }}</td>
           <td *ngIf="editingUserId !== user.id">{{ user.email }}</td>
           <td *ngIf="editingUserId !== user.id">{{ user.dni }}</td>
           <td *ngIf="editingUserId !== user.id">{{ user.shift }}</td>
           <td *ngIf="editingUserId !== user.id">{{ user.grade_year }}</td>
-  
-          <!-- mostrar campos de edicion cuando se esta editando -->
-          <td *ngIf="editingUserId === user.id">
-            <span class="form-control">{{ user.id }}</span> 
-          </td>
+
+          <!-- campos para editar -->
           <td *ngIf="editingUserId === user.id">
             <input [(ngModel)]="editData.first_name" placeholder="Nombre" class="form-control"/>
           </td>
@@ -48,19 +69,17 @@
           <td *ngIf="editingUserId === user.id">
             <input [(ngModel)]="editData.grade_year" placeholder="Curso/Año" class="form-control"/>
           </td>
-  
-          
+
           <td>
+            
             <button *ngIf="editingUserId !== user.id" (click)="editUser(user.id)" class="btn btn-primary btn-sm text-white me-2">Editar</button>
             <button *ngIf="editingUserId !== user.id" (click)="deleteUser(user.id)" class="btn btn-danger btn-sm text-white">Eliminar</button>
-  
-            
-            <button *ngIf="editingUserId === user.id" (click)="saveUser() "class="btn btn-success btn-sm text-white me-2" >Guardar</button>
+
+            <button *ngIf="editingUserId === user.id" (click)="saveUser()" class="btn btn-success btn-sm text-white me-2">Guardar</button>
             <button *ngIf="editingUserId === user.id" (click)="cancelEdit()" class="btn btn-secondary btn-sm text-white">Cancelar</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  
 </main>
