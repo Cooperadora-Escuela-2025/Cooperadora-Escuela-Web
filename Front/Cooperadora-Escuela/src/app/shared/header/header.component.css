@@ -9,3 +9,8 @@
     margin-right: 800rem;
     
 }
+
+.header-gradient {
+  background: linear-gradient(to bottom, #212529, #6c757d); 
+  color: white;
+}

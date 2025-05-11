@@ -13,3 +13,7 @@ footer a:hover {
     /* Cambia este valor por el color que desees */
 }
 
+.header-gradient {
+  background: linear-gradient(to bottom, #212529, #6c757d); /* de negro a gris claro */
+  color: white;
+}

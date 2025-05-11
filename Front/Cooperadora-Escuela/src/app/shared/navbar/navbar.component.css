@@ -1,5 +1,5 @@
 .navbar {
-    background:  #212529;
+    background: linear-gradient(to bottom, #6c757d , #212529); 
     padding: 0px 289px;
     display: flex;
     justify-content: center;
@@ -18,4 +18,5 @@
   .buttonnav:hover {
     color: grey;
   }
-  
+
+ 
