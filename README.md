@@ -15,18 +15,10 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 # Proyecto Cooperadora Escuela 2025
 
 
-# Indice
 
-|Topic|Description|
-|---|---|
-|[Team](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Team)|Integrantes del grupo|
-|[Sprint 0](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-0)|Resumen del Sprint 0|
-|[Sprint 1](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-1)|Resumen del Sprint 1|
-|[Sprint 2](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Sprint-2)|Resumen del Sprint 2|
+
 |[Requerimientos](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Requerimientos)|Requerimientos Funcionales y No Funcionales|
-|[IEEE830](https://github.com/Cooperadora-Escuela-2025/.github/wiki/IEEE830)|Documentacion del IEEE830|
-|[Testing](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Testing)|Testing del proyecto|
-|[Releases](https://github.com/Cooperadora-Escuela-2025/.github/wiki/Releases)|Releases de la APP y WEB|
+
 
 ***
 
