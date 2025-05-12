@@ -17,8 +17,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
-    private http: HttpClient, // Inyección de HttpClient para llamadas HTTP
-    private router: Router // Asegúrate de inyectar Router aquí
+    private http: HttpClient,
+    private router: Router 
   ) {}
 
   ngOnInit(): void {
@@ -47,7 +47,10 @@ export class CartComponent implements OnInit {
 
   // Método para finalizar la compra
   goToCheckout(): void {
-    this.router.navigate(['/checkout']); // Aquí ya funciona el router
+    this.router.navigate(['/checkout']);
+  }
+
+  goToProducts(): void {
+  this.router.navigate(['/products']);
   }
 }
-

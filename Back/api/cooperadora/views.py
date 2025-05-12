@@ -16,11 +16,53 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from openpyxl import Workbook
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from openpyxl.styles import Font, PatternFill
 from collections import defaultdict
 from decimal import Decimal
 import mercadopago
+
+from django.core.mail import send_mail
+
+@csrf_exempt
+def contacto(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+
+            nombre = data.get('nombre')
+            email = data.get('email')
+            asunto = data.get('asunto')
+            mensaje = data.get('mensaje')
+
+            if not all([nombre, email, asunto, mensaje]):
+                return JsonResponse({'success': False, 'error': 'Faltan campos obligatorios'}, status=400)
+
+            cuerpo_mensaje = f"""
+            Has recibido un nuevo mensaje desde el formulario de contacto:
+
+            Nombre: {nombre}
+            Correo electrónico: {email}
+            Asunto: {asunto}
+            Mensaje:
+            {mensaje}
+            """
+
+            send_mail(
+                subject=f"Nuevo mensaje: {asunto}",
+                message=cuerpo_mensaje,
+                from_email=email,
+                recipient_list=['contacto.cooperadora.escuela@gmail.com'],
+                fail_silently=False,
+            )
+
+            return JsonResponse({'success': True, 'message': 'Mensaje enviado correctamente'})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
 
 
 # preferencia de pago

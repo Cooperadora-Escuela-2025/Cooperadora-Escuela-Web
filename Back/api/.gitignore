@@ -48,3 +48,5 @@ frontend/dist/
 
 # evita migraciones
 Back/api/cooperadora/migrations/
+
+.env

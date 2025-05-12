@@ -8,6 +8,7 @@ from cooperadora import views
 from cooperadora.views import ProcedureViewSet,all_profile_view, profile_view,login,register, register_user_by_admin
 from rest_framework_simplejwt import views as jwt_views
 from cooperadora.views import ProductViewSet, UserViewSet, OrderViewSet, CheckoutView, download_orders_excel,create_preference
+from cooperadora.views import contacto
 
 
 router = DefaultRouter()
@@ -34,7 +35,9 @@ urlpatterns = [
     #rutas para obtener el token de acceso y el token de actualización
     path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('contacto/', contacto, name='contacto'),  # esta es la nueva ruta
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

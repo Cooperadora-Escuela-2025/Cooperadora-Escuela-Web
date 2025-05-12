@@ -4,7 +4,7 @@
   <!-- Carrito vacío -->
   <div *ngIf="cart.length === 0; else cartList" class="text-center">
     <p class="lead">El carrito está vacío.</p>
-    <a class="btn btn-primary mt-3" routerLink="products">Seguir comprando</a>
+    <button class="btn btn-primary" (click)="goToProducts()">Seguir comprando</button>
   </div>
 
   <!-- Carrito con productos -->
@@ -44,7 +44,7 @@
       <div class="d-flex gap-2">
         <button class="btn btn-outline-danger" (click)="clearCart()">Vaciar carrito</button>
         <button class="btn btn-success" (click)="goToCheckout()">Finalizar compra</button>
-        <button class="btn btn-secondary" routerLink="products">Seguir comprando</button>
+        <button class="btn btn-secondary" (click)="goToProducts()">Seguir comprando</button>
       </div>
     </div>
   </ng-template>

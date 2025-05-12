@@ -3,7 +3,6 @@ import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CartSummaryComponent } from "../cart-summary/cart-summary.component";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
 import { CartService } from '../../services/cart.service';
