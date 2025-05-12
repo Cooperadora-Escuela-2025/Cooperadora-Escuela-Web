@@ -42,18 +42,54 @@ export class CheckoutComponent implements OnInit {
   }
 
   submitOrder(): void {
-    const order = {
-      name: this.name,
-      surname: this.surname,
-      dni: this.dni,
-      total: this.total,
-      payment_method: this.paymentMethod,
-      products: this.cart.map(product => ({
-        product: product.id,
-        unit_price: product.price,
-        quantity: product.quantity || 1,
-      })),
-    };
+  const order = {
+    name: this.name,
+    surname: this.surname,
+    dni: this.dni,
+    total: this.total,
+    payment_method: this.paymentMethod,
+    products: this.cart.map(product => ({
+      product: product.id,
+      unit_price: product.price,
+      quantity: product.quantity || 1,
+    })),
+  };
+
+  if (this.paymentMethod === 'mercadopago') {
+    // Primero guardar la orden (opcional según tu lógica)
+    this.apiService.createOrder(order).subscribe({
+      next: () => {
+        // Luego crear la preferencia de Mercado Pago
+        this.http.post<{ init_point: string }>('http://localhost:8000/create_preference/', order).subscribe({
+          next: (response) => {
+            window.location.href = response.init_point; // Redirige a Mercado Pago
+          },
+          error: (error) => {
+            console.error('Error creando preferencia de pago:', error);
+            alert('No se pudo iniciar el pago con Mercado Pago.');
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error al crear la orden:', error);
+        alert('Hubo un error al procesar la orden.');
+      },
+    });
+  } else {
+    // Flujo para pago en efectivo
+    this.apiService.createOrder(order).subscribe({
+      next: () => {
+        alert(`Compra con ${this.paymentMethod} exitosa.`);
+        this.cartService.clearCart();
+        this.router.navigate(['/products']);
+      },
+      error: (error) => {
+        console.error('Error al crear la orden:', error);
+        alert('Hubo un error al procesar la orden.');
+      },
+    });
+  }
+
 
     console.log('Datos enviados al backend:', order);
 

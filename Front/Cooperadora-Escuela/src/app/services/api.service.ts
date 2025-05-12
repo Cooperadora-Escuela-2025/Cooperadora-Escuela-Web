@@ -32,6 +32,9 @@ export class ApiService {
   deleteProduct(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/products/${id}/`);
   }
+
+createPreference(order: any) {
+  return this.http.post<any>(`${this.baseUrl}/create_preference/`, order);
 }
 
-
+}

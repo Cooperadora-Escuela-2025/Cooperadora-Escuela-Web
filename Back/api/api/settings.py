@@ -141,3 +141,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Obtiene el valor de EMAIL_HOST_USER desde el archivo .env
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Obtiene el valor de EMAIL_HOST_PASSWORD desde el archivo .env
+
+
+MERCADOPAGO_ACCESS_TOKEN = config('MERCADOPAGO_ACCESS_TOKEN')

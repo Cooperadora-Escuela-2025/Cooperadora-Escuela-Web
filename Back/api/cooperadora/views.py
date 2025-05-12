@@ -21,8 +21,9 @@ from openpyxl.styles import Font, PatternFill
 from collections import defaultdict
 from decimal import Decimal
 import mercadopago
-
+from django.conf import settings
 from django.core.mail import send_mail
+from rest_framework.permissions import AllowAny
 
 @csrf_exempt
 def contacto(request):
@@ -66,32 +67,42 @@ def contacto(request):
 
 
 # preferencia de pago
-@api_view(['GET'])
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def create_preference(request):
-    sdk = mercadopago.SDK("APP_USR-2917072349699367-041811-9a5d9ca08b6a89b5375e0da9bdf07012-2319050859")  # Usá tu Access Token
+    print(">>> create_preference fue llamada")
+    sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+
+    items = []
+    for product in request.data.get('products', []):
+        items.append({
+            "title": f"Producto {product['product']}",
+            "unit_price": float(product['unit_price']),
+            "quantity": int(product['quantity']),
+        })
 
     preference_data = {
-        "items": [
-            {
-                "title": "Servicio comprado",
-                "quantity": 1,
-                "unit_price": 1500.00
-            }
-        ],
+        "items": items,
         "back_urls": {
-            "success": "https://tusitio.com/success",
-            "failure": "https://tusitio.com/failure",
-            "pending": "https://tusitio.com/pending"
+            "success": "http://localhost:4200/payment-success",
+            "failure": "http://localhost:4200/payment-failure",
+            "pending": "http://localhost:4200/payment-pending",
         },
-        "auto_return": "approved"
+        "auto_return": "approved",
     }
 
     preference_response = sdk.preference().create(preference_data)
-    preference = preference_response["response"]
-
-    return JsonResponse({"init_point": preference["init_point"]})
-
-from rest_framework.exceptions import ValidationError
+    print("Respuesta de Mercado Pago:", preference_response)
+    
+    if "response" in preference_response and "init_point" in preference_response["response"]:
+        init_point = preference_response["response"]["init_point"]
+        return Response({"init_point": init_point})
+    else:
+        return Response(
+            {"error": "No se pudo generar el link de pago con Mercado Pago."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 #fin preferencia de pago
 
 

@@ -16,7 +16,11 @@ import { ProductFormComponent } from './pages/product-form/product-form.componen
 import { CartComponent } from './pages/cart/cart.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component'
 import { ProceduresComponent } from './pages/procedures/procedures.component';
-import { Error404Component } from './pages/error404/error404.component'; 
+import { Error404Component } from './pages/error404/error404.component';
+
+import { PaymentSuccessComponent } from './pages/payment-success/payment-success.component';
+import { PaymentFailureComponent } from './pages/payment-failure/payment-failure.component';
+import { PaymentPendingComponent } from './pages/payment-pending/payment-pending.component';
 
 
 export const routes: Routes = [
@@ -27,11 +31,14 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent,canActivate: [authGuard]  },
   { path: 'list-users', component: ListUsersComponent,canActivate: [authGuard]  },
   { path: 'products', component: ProductListComponent,canActivate: [authGuard]  },
-  { path:'cart',component:CartComponent,canActivate: [authGuard]},
-  { path:'products-form',component:ProductFormComponent,canActivate: [authGuard] },
-  { path:'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
-  { path:'checkout',component:CheckoutComponent,canActivate: [authGuard] },
-  { path:'procedure',component:ProceduresComponent},
+  { path: 'cart',component:CartComponent,canActivate: [authGuard]},
+  { path: 'products-form',component:ProductFormComponent,canActivate: [authGuard] },
+  { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
+  { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
+  { path: 'procedure',component:ProceduresComponent},
+  { path: 'payment-success', component: PaymentSuccessComponent },
+  { path: 'payment-failure', component: PaymentFailureComponent },
+  { path: 'payment-pending', component: PaymentPendingComponent },
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
