@@ -264,15 +264,94 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 # checkout   
+import mercadopago
+import logging
+
+logger = logging.getLogger(__name__)  # para ver logs en consola o archivo
+
 class CheckoutView(APIView):
     def post(self, request):
-        serializer = OrderSerializer(data=request.data)  # Validar los datos de la orden
+        serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()  # Guardar la orden y los productos asociados
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            try:
+                order = serializer.save()
+                logger.info("Orden guardada")
+
+                sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+
+                items = []
+                for order_product in OrderProduct.objects.filter(order=order):
+                    items.append({
+        'title': order_product.product.name,
+        'quantity': order_product.quantity,
+        'unit_price': float(order_product.unit_price),
+        # 'currency_id': 'ARS',  # Opcional, pero MercadoPago suele pedirlo
+    })
+
+                logger.info(f"Items: {items}")
+
+                preference_data = {
+                    "items": items,
+                    "back_urls": {
+                        "success": "http://localhost:4200/success",
+                        "failure": "http://localhost:4200/failure",
+                        "pending": "http://localhost:4200/pending"
+                    },
+                # si se descomenta no te lleva a mp "auto_return": "approved",
+                }
+
+                preference_response = sdk.preference().create(preference_data)
+                logger.info(f"Respuesta MercadoPago: {preference_response}") #me muestra el error por consola
+
+                if preference_response["status"] == 201:
+                    preference_url = preference_response["response"]["init_point"]
+                    logger.info(f"URL de pago: {preference_url}")  
+                    return Response({"payment_url": preference_url}, status=status.HTTP_201_CREATED)
+                else:
+                    logger.error(f"Error en la creación de la preferencia: {preference_response}")
+                    return Response(preference_response["response"], status=status.HTTP_400_BAD_REQUEST)
+
+            except Exception as e:
+                logger.error(f"Error en CheckoutView: {str(e)}")
+                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # fin checkout  
 
+
+@csrf_exempt
+def payment_status(request):
+    payment_id = request.GET.get("payment_id")  
+
+    if not payment_id:
+        return JsonResponse({"error": "No se proporcionó payment_id"}, status=400)
+
+    try:
+        sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
+
+        payment_info = sdk.payment().get(payment_id)
+
+        if payment_info["status"] == 200:
+            status_pago = payment_info["response"]["status"]
+            preference_id = payment_info["response"]["order"]["id"]  
+
+            
+            try:
+                order = Order.objects.get(preference_id=preference_id)
+                if status_pago == "approved":
+                    order.status = "pagado"
+                    order.save()
+            except Order.DoesNotExist:
+                return JsonResponse({"error": "Orden no encontrada"}, status=404)
+
+            return JsonResponse({"payment_status": status_pago})
+        else:
+            return JsonResponse({"error": "Error al consultar el pago"}, status=payment_info["status"])
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+    
+    
 
 # descargar excel 
 def download_orders_excel(request):

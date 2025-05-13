@@ -3,7 +3,6 @@ import { Product } from '../../models/product.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-cart',
@@ -17,7 +16,6 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
-    private http: HttpClient,
     private router: Router 
   ) {}
 

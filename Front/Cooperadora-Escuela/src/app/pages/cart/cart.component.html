@@ -1,13 +1,9 @@
 <div class="container my-5">
   <h2 class="mb-4 text-center">🛒 Carrito de Compras</h2>
-
-  <!-- Carrito vacío -->
   <div *ngIf="cart.length === 0; else cartList" class="text-center">
     <p class="lead">El carrito está vacío.</p>
     <button class="btn btn-primary" (click)="goToProducts()">Seguir comprando</button>
   </div>
-
-  <!-- Carrito con productos -->
   <ng-template #cartList>
     <div class="table-responsive">
       <table class="table table-bordered table-hover align-middle text-center">
@@ -35,8 +31,6 @@
         </tbody>
       </table>
     </div>
-
-    <!-- Total y acciones -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
       <h4 class="mb-3 mb-md-0">
         Total: <span class="text-success">{{ getTotal() | currency:'ARS' }}</span>

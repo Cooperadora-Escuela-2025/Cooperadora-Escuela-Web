@@ -5,6 +5,10 @@ from decouple import config
 from pathlib import Path
 
 
+# mi token de mp, tiene que cambiarlo por el de ustedes
+MERCADOPAGO_ACCESS_TOKEN = 'APP_USR-6685299325110118-050714-fba3416a732b438437658a2773e94320-2319050859'
+
+
 # Define BASE_DIR como la ruta del directorio que contiene settings.py
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -135,12 +139,12 @@ REST_FRAMEWORK = {
 }
 
 # Configuración para envío de correos con Gmail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Obtiene el valor de EMAIL_HOST_USER desde el archivo .env
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Obtiene el valor de EMAIL_HOST_PASSWORD desde el archivo .env
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Obtiene el valor de EMAIL_HOST_USER desde el archivo .env
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Obtiene el valor de EMAIL_HOST_PASSWORD desde el archivo .env
 
 
-MERCADOPAGO_ACCESS_TOKEN = config('MERCADOPAGO_ACCESS_TOKEN')
+# 

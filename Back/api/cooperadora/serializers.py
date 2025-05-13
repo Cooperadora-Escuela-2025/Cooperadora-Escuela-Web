@@ -49,6 +49,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         
         
 # serializer producto      
+# serializer producto      
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product

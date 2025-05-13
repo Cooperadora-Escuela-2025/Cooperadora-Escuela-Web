@@ -36,8 +36,8 @@ export const routes: Routes = [
   { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
   { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
   { path: 'procedure',component:ProceduresComponent},
-  { path: 'payment-success', component: PaymentSuccessComponent },
-  { path: 'payment-failure', component: PaymentFailureComponent },
+  { path: 'success', component: PaymentSuccessComponent },
+  { path: 'payment', component: PaymentFailureComponent },
   { path: 'payment-pending', component: PaymentPendingComponent },
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },

@@ -13,7 +13,9 @@ export class ApiService {
   constructor(private http: HttpClient) { } // Inyecta HttpClient aquí
 
   getProducts(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/products/`);
+    const token = localStorage.getItem('access_token');//autoriza al user
+    const headers = new HttpHeaders().set('Authorization', 'Bearer ' + token);
+    return this.http.get(`${this.baseUrl}/products/`, { headers });
   }
 
   // login(username: string, password: string): Observable<any> {
