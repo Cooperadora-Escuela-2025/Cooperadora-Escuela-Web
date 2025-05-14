@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Entornos virtuales
+env/
+venv/
+ENV/
+.venv/
+.ENV/
+
+# Archivos de configuración del entorno
+*.env
+.env.*
+
+# Django
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+static_root/
+local_settings.py
+
+# Archivos de log
+*.log
+
+# Configuración de VS Code
+.vscode/
+
+# Archivos de compilación
+*.egg-info/
+*.egg
+*.bak
+
+# Git
+*.orig
+
+# MacOS
+.DS_Store
+
+# __angular__ u otros proyectos frontales dentro
+frontend/node_modules/
+frontend/dist/
+
+# evita migraciones
+Back/api/cooperadora/migrations/
+
+.env

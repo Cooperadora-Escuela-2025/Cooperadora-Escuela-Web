@@ -1,0 +1,19 @@
+footer a {
+    text-decoration: none;
+    /* Elimina el subrayado de los enlaces */
+}
+
+footer a:hover {
+    text-decoration: underline;
+    /* Subraya los enlaces al pasar el mouse */
+}
+
+.custom-color {
+    color: #FF5733;
+    /* Cambia este valor por el color que desees */
+}
+
+.header-gradient {
+  background: linear-gradient(to bottom, #212529, #6c757d); /* de negro a gris claro */
+  color: white;
+}

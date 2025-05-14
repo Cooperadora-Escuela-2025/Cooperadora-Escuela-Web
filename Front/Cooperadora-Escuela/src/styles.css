@@ -1,0 +1,92 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    /* Aplica la fuente Josefin Sans a todo el cuerpo */
+    background-color: #f0f0f0;
+    /* Color de fondo claro (opcional) */
+    color: #222;
+    /* Color de texto (opcional) */
+    margin: 0;
+    /* Elimina márgenes por defecto */
+    padding: 0;
+    /* Elimina padding por defecto */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Josefin Sans', sans-serif;
+    /* Aplica la fuente a los encabezados */
+    color: #222;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    /* Tamaño de fuente para títulos de tarjetas */
+    font-weight: 600;
+    /* Negrita */
+    color: #222;
+}
+
+.card-text {
+    font-size: 1rem;
+    /* Tamaño de fuente para texto de tarjetas */
+    color: #222;
+    /* Color de texto más suave */
+}
+
+.btn {
+    font-family: 'Josefin Sans', sans-serif;
+    /* Aplica la fuente a los botones */
+    color: #222;
+}
+
+/* mantiene el footer siempre abajo */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .content-wrap {
+    flex: 1;
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  footer {
+    margin-top: auto; /* Esto asegura que el footer siempre quede al final de la página */
+    background-color: #343a40; /* Color oscuro para el fondo */
+    color: #fff; /* Color de texto blanco */
+    padding: 20px 0; /* Relleno alrededor del footer */
+}
+  
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}

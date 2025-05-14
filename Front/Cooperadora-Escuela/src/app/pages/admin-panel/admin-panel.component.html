@@ -1,0 +1,31 @@
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Admin Panel</h2>
+  <div class="row justify-content-center">
+    
+    <div class="col-md-5 mb-4">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h4 class="card-title">Editar Productos</h4>
+          <p class="card-text">Gestioná los productos disponibles en la tienda.</p>
+          <button class="btn btn-primary mt-auto" [routerLink]="['/products']">
+            Ir a productos
+          </button>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="col-md-5 mb-4">
+      <div class="card h-100 shadow-sm text-center">
+        <div class="card-body d-flex flex-column justify-content-between">
+          <h4 class="card-title">Editar Usuarios</h4>
+          <p class="card-text">Administrá los usuarios registrados.</p>
+          <button class="btn btn-secondary mt-auto" [routerLink]="['/list-users']">
+            Ir a usuarios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

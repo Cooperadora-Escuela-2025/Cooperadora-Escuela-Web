@@ -1,0 +1,78 @@
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Contáctanos</h2>
+  
+    <!-- Mensaje de éxito -->
+    <div *ngIf="enviadoConExito" class="alert alert-success" role="alert">
+      ¡Tu mensaje fue enviado con éxito!
+    </div>
+  
+    <!-- Mensaje de error -->
+    <div *ngIf="mostrarError" class="alert alert-danger" role="alert">
+      Por favor, completa todos los campos correctamente antes de enviar.
+    </div>
+  
+    <form [formGroup]="contactoForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="nombre"
+          [class.is-invalid]="contactoForm.get('nombre')?.touched && contactoForm.get('nombre')?.invalid"
+          placeholder="Tu nombre"
+        >
+        <div *ngIf="contactoForm.get('nombre')?.touched && contactoForm.get('nombre')?.invalid" class="invalid-feedback">
+          El nombre es requerido y debe tener al menos 2 caracteres.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          formControlName="email"
+          [class.is-invalid]="contactoForm.get('email')?.touched && contactoForm.get('email')?.invalid"
+          placeholder="nombre@ejemplo.com"
+        >
+        <div *ngIf="contactoForm.get('email')?.touched && contactoForm.get('email')?.invalid" class="invalid-feedback">
+          Ingresa un correo electrónico válido.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="asunto" class="form-label">Asunto</label>
+        <input
+          type="text"
+          class="form-control"
+          id="asunto"
+          formControlName="asunto"
+          [class.is-invalid]="contactoForm.get('asunto')?.touched && contactoForm.get('asunto')?.invalid"
+          placeholder="Motivo del contacto"
+        >
+        <div *ngIf="contactoForm.get('asunto')?.touched && contactoForm.get('asunto')?.invalid" class="invalid-feedback">
+          El asunto es requerido.
+        </div>
+      </div>
+  
+      <div class="mb-3">
+        <label for="mensaje" class="form-label">Mensaje</label>
+        <textarea
+          class="form-control"
+          id="mensaje"
+          rows="5"
+          formControlName="mensaje"
+          [class.is-invalid]="contactoForm.get('mensaje')?.touched && contactoForm.get('mensaje')?.invalid"
+          placeholder="Escribe tu mensaje aquí"
+        ></textarea>
+        <div *ngIf="contactoForm.get('mensaje')?.touched && contactoForm.get('mensaje')?.invalid" class="invalid-feedback">
+          El mensaje es requerido y debe tener al menos 10 caracteres.
+        </div>
+      </div>
+  
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+  </div>
+  

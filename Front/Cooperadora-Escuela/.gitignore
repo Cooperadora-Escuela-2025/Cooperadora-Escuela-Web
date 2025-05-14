@@ -1,0 +1,13 @@
+# Ignorar la carpeta node_modules (dependencias de Angular)
+/node_modules/
+npm-debug.log
+/dist/
+.angular/
+
+# Ignorar la carpeta dist (build de producción de Angular)
+/dist/
+/tmp
+
+# Ignorar los archivos de configuración de entorno
+.env
+
