@@ -11,7 +11,7 @@ from rest_framework import viewsets,permissions
 import json
 from django.http import JsonResponse
 from rest_framework.permissions import IsAdminUser
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
@@ -243,7 +243,7 @@ def register(request):
         return JsonResponse({"error": "Método no permitido."}, status=405)
 #fin registro
 
-
+from rest_framework.parsers import MultiPartParser, FormParser
 # producto
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -253,6 +253,18 @@ class ProductViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    def update(self, request, pk=None):
+        product = get_object_or_404(Product, pk=pk)
+        product.name = request.data.get('name', product.name)
+        product.price = request.data.get('price', product.price)
+    
+        if 'image' in request.FILES:
+            product.image = request.FILES['image']  
+
+        product.save()
+        return Response({'message': 'Producto actualizado correctamente'})
+
 #fin producto
 
 

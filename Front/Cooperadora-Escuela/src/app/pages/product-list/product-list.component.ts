@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 
 
 
@@ -19,16 +20,22 @@ import { CartService } from '../../services/cart.service';
 
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
+  product: Product = { id: 0, name: '', price: 0, image: '' };
+  isAdminUser: boolean = false;
 
   constructor(
     private productService: ProductService,
     private router: Router,
     private destroyRef: DestroyRef,
-    private cartService: CartService // Inyectar CartService
+    private cartService: CartService, // Inyectar CartService
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
     this.loadProducts(); // Cargar los productos al inicializar el componente
+    this.authService.currentUser$.subscribe(user => {
+      this.isAdminUser = user?.is_staff || false;
+    });
   }
 
   // Método para cargar los productos desde el backend
@@ -72,4 +79,9 @@ export class ProductListComponent implements OnInit {
   editProduct(product: Product) {
     this.router.navigate(['/product-form', product.id]); // Navegar a la página de edición
   }
+
+  saveProduct(){
+    this.router.navigate(['/product-add']);
+  }
+
 }
