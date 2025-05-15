@@ -139,12 +139,9 @@ REST_FRAMEWORK = {
 }
 
 # Configuración para envío de correos con Gmail
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Obtiene el valor de EMAIL_HOST_USER desde el archivo .env
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Obtiene el valor de EMAIL_HOST_PASSWORD desde el archivo .env
-
-
-# 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

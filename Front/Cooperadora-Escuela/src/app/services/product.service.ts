@@ -8,7 +8,7 @@ import { Product } from '../models/product.model';
 })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:8000/products'; // Cambia esta URL según tu backend
+  private apiUrl = 'http://localhost:8000/products';
 
   constructor(private http: HttpClient) {}
 
@@ -19,21 +19,21 @@ export class ProductService {
 
   // Obtener un producto por ID
   getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.http.get<Product>(`${this.apiUrl}/${id}/`);
   }
 
   // Crear un nuevo producto
-  createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
-  }
+  createProduct(product: FormData): Observable<Product> {
+  return this.http.post<Product>(this.apiUrl+'/', product);
+}
 
   // Actualizar un producto existente
-  updateProduct(id: number, product: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
-  }
+updateProduct(id: number, product: FormData): Observable<Product> {
+  return this.http.put<Product>(`${this.apiUrl}/${id}/`, product);
+}
 
   // Eliminar un producto por ID
   deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}/`);
   }
 }

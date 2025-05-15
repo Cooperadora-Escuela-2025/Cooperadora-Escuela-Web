@@ -21,6 +21,8 @@ import { Error404Component } from './pages/error404/error404.component';
 import { PaymentSuccessComponent } from './pages/payment-success/payment-success.component';
 import { PaymentFailureComponent } from './pages/payment-failure/payment-failure.component';
 import { PaymentPendingComponent } from './pages/payment-pending/payment-pending.component';
+import { ProductAddComponent } from './pages/product-add/product-add.component';
+import { MobileAppPromoComponent } from './pages/mobile-app-promo/mobile-app-promo.component'
 
 
 export const routes: Routes = [
@@ -32,13 +34,15 @@ export const routes: Routes = [
   { path: 'list-users', component: ListUsersComponent,canActivate: [authGuard]  },
   { path: 'products', component: ProductListComponent,canActivate: [authGuard]  },
   { path: 'cart',component:CartComponent,canActivate: [authGuard]},
-  { path: 'products-form',component:ProductFormComponent,canActivate: [authGuard] },
+  { path: 'product-form/:id',component:ProductFormComponent,canActivate: [authGuard] },//coregir la ruta, agregarle el id
+  { path: 'product-add',component:ProductAddComponent,canActivate: [authGuard] },
   { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
   { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
   { path: 'procedure',component:ProceduresComponent},
+  { path: 'app-mobile',component:MobileAppPromoComponent},
   { path: 'success', component: PaymentSuccessComponent },
-  { path: 'payment', component: PaymentFailureComponent },
-  { path: 'payment-pending', component: PaymentPendingComponent },
+  { path: 'failure', component: PaymentFailureComponent },
+  { path: 'pending', component: PaymentPendingComponent },
   // Rutas públicas
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },

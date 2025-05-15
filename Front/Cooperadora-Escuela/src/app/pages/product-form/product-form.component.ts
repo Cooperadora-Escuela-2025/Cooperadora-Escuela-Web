@@ -1,5 +1,5 @@
 import { Component, OnInit, DestroyRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 // import { ProductService } from '../product.service';
 // import { Product } from '../product.model';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-product-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule,RouterModule],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.css'
 })
@@ -28,73 +28,77 @@ export class ProductFormComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEdit = true;
-      // this.loadProduct(+id);
-    }
+   const id = this.route.snapshot.paramMap.get('id');
+  if (id) {
+    this.isEdit = true;
+    this.loadProduct(+id); 
+  }
   }
 
-  // loadProduct(id: number): void {
-  //   this.productService.getProduct(id)
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe({
-  //       next: (product) => {
-  //         this.product = product;
-  //       },
-  //       error: (error) => {
-  //         console.error('Error al cargar el producto:', error);
-  //         this.router.navigate(['/products']);
-  //       },
-  //     });
-  // }
+  loadProduct(id: number): void {
+    this.productService.getProductById(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (product) => {
+          this.product = product;
+        },
+        error: (error) => {
+          console.error('Error al cargar el producto:', error);
+          this.router.navigate(['/products']);
+        },
+      });
+  }
 
-  // saveProduct(): void {
-  //   if (this.isEdit) {
-  //     const imageInput = document.getElementById('image') as HTMLInputElement;
-  //     const image = imageInput?.files?.[0];
-  //     if (image) {
-  //       // this.productService.updateProduct(this.product, image)
-  //         .pipe(takeUntilDestroyed(this.destroyRef))
-  //         .subscribe({
-  //           next: () => {
-  //             this.router.navigate(['/products']);
-  //           },
-  //           error: (error) => {
-  //             console.error('Error al actualizar el producto:', error);
-  //           },
-  //         });
-  //     } else {
-  //       alert('Por favor, selecciona una imagen.');
-  //     }
-  //   } else {
-  //     const imageInput = document.getElementById('image') as HTMLInputElement;
-  //     if (imageInput && imageInput.files && imageInput.files.length > 0) {
-  //       const image = imageInput.files[0];
-  //       this.productService.addProduct(this.product, image)
-  //         .pipe(takeUntilDestroyed(this.destroyRef))
-  //         .subscribe({
-  //           next: () => {
-  //             this.router.navigate(['/products']);
-  //           },
-  //           error: (error) => {
-  //             console.error('Error al agregar el producto:', error);
-  //           },
-  //         });
-  //     } else {
-  //       alert('Por favor, selecciona una imagen.');
-  //     }
-  //   }
-  // }
+  saveProduct(): void {
+ const imageInput = document.getElementById('image') as HTMLInputElement;
+  const formData = new FormData();
 
+  // Agregamos siempre nombre y precio
+  formData.append('name', this.product.name);
+  formData.append('price', this.product.price.toString());
+
+  // Revisamos si se seleccionó una imagen nueva
+  const file = imageInput?.files?.[0];
+  const isImageSelected = !!file;
+
+  if (this.isEdit) {
+    // Solo enviamos la imagen si se seleccionó una nueva
+    if (isImageSelected) {
+      formData.append('image', file!);
+    }
+
+    this.productService.updateProduct(this.product.id, formData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.router.navigate(['/products']),
+        error: (error) => console.error('Error al actualizar el producto:', error),
+      });
+
+  } else {
+    // En creación, la imagen es obligatoria
+    if (!isImageSelected) {
+      alert('Por favor, selecciona una imagen.');
+      return;
+    }
+
+    formData.append('image', file!);
+
+    this.productService.createProduct(formData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => this.router.navigate(['/products']),
+        error: (error) => console.error('Error al agregar el producto:', error),
+      });
+  }
+}
   cancel(): void {
     this.router.navigate(['/products']);
   }
 
   onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.product.image = file;
-    }
+  const file = event.target.files[0];
+  if (file) {
+    this.product.image = file.name; 
   }
+}
 }

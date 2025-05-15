@@ -47,7 +47,7 @@ export class AuthService {
   logout(): void {
 
     localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('refresh_token');//para cerrar sesion
     // localStorage.removeItem('user_email');
     // localStorage.removeItem('user_id');
     localStorage.removeItem('user');
