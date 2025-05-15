@@ -21,6 +21,7 @@ from openpyxl.styles import Font, PatternFill
 from collections import defaultdict
 from decimal import Decimal
 import mercadopago
+import logging
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import AllowAny
@@ -67,42 +68,7 @@ def contacto(request):
 
 
 # preferencia de pago
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def create_preference(request):
-    print(">>> create_preference fue llamada")
-    sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
-    items = []
-    for product in request.data.get('products', []):
-        items.append({
-            "title": f"Producto {product['product']}",
-            "unit_price": float(product['unit_price']),
-            "quantity": int(product['quantity']),
-        })
-
-    preference_data = {
-        "items": items,
-        "back_urls": {
-            "success": "http://localhost:4200/payment-success",
-            "failure": "http://localhost:4200/payment-failure",
-            "pending": "http://localhost:4200/payment-pending",
-        },
-        "auto_return": "approved",
-    }
-
-    preference_response = sdk.preference().create(preference_data)
-    print("Respuesta de Mercado Pago:", preference_response)
-    
-    if "response" in preference_response and "init_point" in preference_response["response"]:
-        init_point = preference_response["response"]["init_point"]
-        return Response({"init_point": init_point})
-    else:
-        return Response(
-            {"error": "No se pudo generar el link de pago con Mercado Pago."},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
 #fin preferencia de pago
 
 
@@ -263,11 +229,9 @@ class OrderViewSet(viewsets.ModelViewSet):
 # fin orden
 
 
-# checkout   
-import mercadopago
-import logging
-
-logger = logging.getLogger(__name__)  # para ver logs en consola o archivo
+# checkout
+   
+logger = logging.getLogger(__name__)
 
 class CheckoutView(APIView):
     def post(self, request):
@@ -285,7 +249,7 @@ class CheckoutView(APIView):
         'title': order_product.product.name,
         'quantity': order_product.quantity,
         'unit_price': float(order_product.unit_price),
-        # 'currency_id': 'ARS',  # Opcional, pero MercadoPago suele pedirlo
+        'currency_id': 'ARS'
     })
 
                 logger.info(f"Items: {items}")
@@ -296,12 +260,11 @@ class CheckoutView(APIView):
                         "success": "http://localhost:4200/success",
                         "failure": "http://localhost:4200/failure",
                         "pending": "http://localhost:4200/pending"
-                    },
-                # si se descomenta no te lleva a mp "auto_return": "approved",
+                    }
                 }
 
                 preference_response = sdk.preference().create(preference_data)
-                logger.info(f"Respuesta MercadoPago: {preference_response}") #me muestra el error por consola
+                logger.info(f"Respuesta MercadoPago: {preference_response}") #muestra el error por consola
 
                 if preference_response["status"] == 201:
                     preference_url = preference_response["response"]["init_point"]
@@ -318,7 +281,7 @@ class CheckoutView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # fin checkout  
 
-
+# status
 @csrf_exempt
 def payment_status(request):
     payment_id = request.GET.get("payment_id")  
@@ -351,6 +314,7 @@ def payment_status(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
+# fin status     
     
 
 # descargar excel 

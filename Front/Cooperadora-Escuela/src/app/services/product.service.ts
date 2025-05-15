@@ -8,7 +8,7 @@ import { Product } from '../models/product.model';
 })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:8000/products'; // Cambia esta URL según tu backend
+  private apiUrl = 'http://localhost:8000/products';
 
   constructor(private http: HttpClient) {}
 
