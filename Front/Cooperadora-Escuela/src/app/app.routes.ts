@@ -22,6 +22,7 @@ import { PaymentSuccessComponent } from './pages/payment-success/payment-success
 import { PaymentFailureComponent } from './pages/payment-failure/payment-failure.component';
 import { PaymentPendingComponent } from './pages/payment-pending/payment-pending.component';
 import { ProductAddComponent } from './pages/product-add/product-add.component';
+import { MobileAppPromoComponent } from './pages/mobile-app-promo/mobile-app-promo.component'
 
 
 export const routes: Routes = [
@@ -38,6 +39,7 @@ export const routes: Routes = [
   { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
   { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
   { path: 'procedure',component:ProceduresComponent},
+  { path: 'app-mobile',component:MobileAppPromoComponent},
   { path: 'success', component: PaymentSuccessComponent },
   { path: 'failure', component: PaymentFailureComponent },
   { path: 'pending', component: PaymentPendingComponent },
