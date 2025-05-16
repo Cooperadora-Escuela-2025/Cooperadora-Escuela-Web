@@ -54,3 +54,12 @@
     background-color: #e0a800;
     border-color: #e0a800;
 }
+
+.cargar{
+    margin-top: 25px;
+}
+
+h1 {
+  font-family: 'Josefin', sans-serif;
+  font-weight: 600; 
+}

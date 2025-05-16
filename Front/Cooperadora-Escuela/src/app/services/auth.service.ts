@@ -1,6 +1,6 @@
 import { HttpClient,HttpHeaders  } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap, throwError } from 'rxjs';
 import { User } from '../models/auth.model';
 
 
@@ -86,4 +86,19 @@ isAdmin(): boolean {
   const user = this.getUserFromStorage();
   return user?.is_staff === true;
 }
+
+// renovar el token
+refreshToken(): Observable<any> {
+  const refresh = localStorage.getItem('refresh');
+  if (!refresh) {
+    return throwError(() => new Error('No refresh token'));
+  }
+
+  return this.http.post<any>(this.baseUrl + 'token/refresh/', { refresh }).pipe(
+    tap(response => {
+      localStorage.setItem('access_token', response.access);
+    })
+  );
+}
+
 }

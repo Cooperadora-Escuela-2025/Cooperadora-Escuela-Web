@@ -6,7 +6,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { ProfileService } from './profile.service';
 import { Router } from '@angular/router';
-
+import { switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -44,14 +44,34 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 || error.status === 403) {
-          // Token expirado o inválido
-          this.authService.logout(); // limpia el local storage
+        if (error.status === 401) {
+        return this.authService.refreshToken().pipe(
+        switchMap(() => {
+          const newToken = this.authService.getAccessToken();
+          const retryReq = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${newToken}`
+            }
+          });
+          return next.handle(retryReq);
+        }),
+        catchError(err => {
+          this.authService.logout();
           this.router.navigate(['/login']);
-        }
-        return throwError(() => error);
-      })
-    );
+          return throwError(() => err);
+        })
+      );
+    }
+
+    if (error.status === 403) {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+    }
+
+    return throwError(() => error);
+  })
+);
+
   }
 }
 

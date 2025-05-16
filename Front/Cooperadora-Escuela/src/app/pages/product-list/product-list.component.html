@@ -1,11 +1,14 @@
 <div class="container product-list mt-5">
-    <h1 class="text-center product-title mb-4">Productos</h1>
-   <button 
-    *ngIf="isAdminUser" 
-    class="btn btn-success btn-sm me-2" 
+    <h1 class="text-center ">Productos</h1>
+
+   <div class="d-flex justify-content-end mb-4" *ngIf="isAdminUser">
+  <button 
+    class="btn btn-success btn-sm" 
     (click)="saveProduct()">
-    Cargar
+    <i class="fas fa-plus"></i> Cargar
   </button>
+</div>
+
     <div class="row">
         <div class="col-md-4 mb-4" *ngFor="let product of products">
             <div class="card text-center h-100 shadow-sm">
@@ -36,12 +39,12 @@
     <i class="fas fa-edit"></i> Editar
   </button>
 
-  <button 
+  <!-- <button 
     *ngIf="isAdminUser" 
     class="btn btn-success btn-sm me-2" 
     (click)="saveProduct()">
     Cargar
-  </button>
+  </button> -->
   
 
 </div>

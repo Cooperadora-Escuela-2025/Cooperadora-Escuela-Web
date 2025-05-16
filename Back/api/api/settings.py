@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from decouple import config
 from pathlib import Path
-
+from datetime import timedelta
 
 # mi token de mp, tiene que cambiarlo por el de ustedes
 MERCADOPAGO_ACCESS_TOKEN = 'APP_USR-6685299325110118-050714-fba3416a732b438437658a2773e94320-2319050859'
@@ -145,3 +145,13 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
