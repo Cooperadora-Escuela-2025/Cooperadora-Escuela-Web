@@ -78,6 +78,8 @@ WSGI_APPLICATION = 'api.wsgi.application'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # URL de tu aplicación Angular
 ]
+ALLOWED_HOSTS = ['*'] #PARA QUE CONECTE CON ANDROID
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 # Database
