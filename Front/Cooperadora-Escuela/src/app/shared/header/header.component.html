@@ -20,6 +20,7 @@
        aria-expanded="false">
       <!-- icono de usuario -->
       <i class="fas fa-user-circle fa-2x me-2"></i>
+      <span class="sr-only">Perfil</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
 
@@ -38,6 +39,7 @@
    [routerLink]="['/cart']"
    style="cursor: pointer;">
   <i class="bi bi-cart-fill text-white fs-4 me-2"></i>
+  <span class="sr-only">Carrito</span>
   <span *ngIf="cartItemCount > 0"
         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
     {{ cartItemCount }}

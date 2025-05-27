@@ -78,7 +78,14 @@ WSGI_APPLICATION = 'api.wsgi.application'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # URL de tu aplicación Angular
 ]
+
+#PARA QUE CONECTE CON ANDROID y utilizar su emulador
 ALLOWED_HOSTS = ['*'] #PARA QUE CONECTE CON ANDROID
+
+#si se usa el celular en android utilizar esta linea y comentar la de arriba poner su  “Dirección IPv4” 
+# y correr django con python manage.py runserver 0.0.0.0:8000 no con python manage.py runserver
+# ALLOWED_HOSTS = ['192tu direccion ipv4.......', 'localhost', '127.0.0.1']
+
 
 
 CORS_ALLOW_ALL_ORIGINS = True

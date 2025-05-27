@@ -1,3 +1,12 @@
+<!-- Solapa de accesibilidad global -->
+<div class="solapa-accesibilidad">
+  <button (click)="mostrar = !mostrar">♿ Accesibilidad</button>
+
+  <div *ngIf="mostrar" class="panel-accesibilidad">
+    <button (click)="leerPantalla()">🔊 Leer toda la página</button>
+    <button (click)="detenerLectura()">⛔ Detener</button>
+  </div>
+</div>
 <div  class="page-container">
     <app-header></app-header>
     <app-navbar class="navcompt"></app-navbar>
