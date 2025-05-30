@@ -82,7 +82,7 @@ CORS_ALLOWED_ORIGINS = [
 #PARA QUE CONECTE CON ANDROID y utilizar su emulador
 ALLOWED_HOSTS = ['*'] #PARA QUE CONECTE CON ANDROID
 
-#si se usa el celular en android utilizar esta linea y comentar la de arriba poner su  “Dirección IPv4” 
+#si se usa el celular en android utilizar esta linea y comentar la de arriba poner su  “Dirección IPv4”. tambien modificar archivos api en auth y network-security-config en xml
 # y correr django con python manage.py runserver 0.0.0.0:8000 no con python manage.py runserver
 # ALLOWED_HOSTS = ['192tu direccion ipv4.......', 'localhost', '127.0.0.1']
 
