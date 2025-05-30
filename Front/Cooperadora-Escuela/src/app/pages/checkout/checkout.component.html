@@ -1,0 +1,48 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h2 class="card-title text-center">Confirmar Compra</h2>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="submitOrder()">
+            <div class="mb-3">
+              <label for="name" class="form-label">Nombre</label>
+              <input type="text" id="name" [(ngModel)]="name" name="name" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="surname" class="form-label">Apellido</label>
+              <input type="text" id="surname" [(ngModel)]="surname" name="surname" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="dni" class="form-label">DNI</label>
+              <input type="text" id="dni" [(ngModel)]="dni" name="dni" class="form-control" required />
+            </div>
+            <div class="mb-3">
+              <label for="paymentMethod" class="form-label">Forma de Pago</label>
+              <select id="paymentMethod" [(ngModel)]="paymentMethod" name="paymentMethod" class="form-select" required>
+                <option value="efectivo">Efectivo</option>
+                <option value="mercadopago">Mercado Pago</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <h3 class="mb-3">Resumen del Carrito</h3>
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let product of cart">
+                  <span>{{ product.name }} - ${{ product.price }} (Cantidad: {{ product.quantity || 1 }})</span>
+                </li>
+              </ul>
+              <h3 class="mt-3">Total: ${{ total }}</h3>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Confirmar Compra</button>
+              <button type="button" class="btn btn-secondary" (click)="goToProductList()">Volver a la lista de productos</button>
+              <button type="button" class="btn btn-success" (click)="downloadExcel()">Descargar Excel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

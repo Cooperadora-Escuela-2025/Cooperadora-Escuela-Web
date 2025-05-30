@@ -1,0 +1,55 @@
+<div class="container product-list mt-5">
+    <h1 class="text-center ">Productos</h1>
+
+   <div class="d-flex justify-content-end mb-4" *ngIf="isAdminUser">
+  <button 
+    class="btn btn-success btn-sm" 
+    (click)="saveProduct()">
+    <i class="fas fa-plus"></i> Cargar
+  </button>
+</div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let product of products">
+            <div class="card text-center h-100 shadow-sm">
+                <img [src]="product.image" alt="{{ product.name }}" class="card-img-top product-image" />
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">Precio: ${{ product.price }}</p>
+                    <div class="mt-auto">
+  <!-- Si es usuario común: botón para agregar al carrito -->
+  <button 
+   
+    class="btn btn-primary btn-sm me-2" 
+    (click)="addToCart(product)">
+    <i class="fas fa-cart-plus"></i> Agregar
+  </button>
+    <button 
+    *ngIf="isAdminUser" 
+    class="btn btn-danger btn-sm me-2" 
+    (click)="deleteProduct(product.id)">
+    <i class="fas fa-trash"></i> Eliminar
+  </button>
+
+  <!-- Si es administrador: botones para editar y eliminar -->
+  <button 
+    *ngIf="isAdminUser" 
+    class="btn btn-warning btn-sm me-2" 
+    (click)="editProduct(product)">
+    <i class="fas fa-edit"></i> Editar
+  </button>
+
+  <!-- <button 
+    *ngIf="isAdminUser" 
+    class="btn btn-success btn-sm me-2" 
+    (click)="saveProduct()">
+    Cargar
+  </button> -->
+  
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

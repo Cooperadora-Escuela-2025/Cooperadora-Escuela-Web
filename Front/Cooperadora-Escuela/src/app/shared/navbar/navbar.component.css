@@ -1,0 +1,22 @@
+.navbar {
+    background: linear-gradient(to bottom, #6c757d , #212529); 
+    padding: 0px 289px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.buttonnav{
+    text-align: center;
+    text-decoration: none;
+    padding: 0 30px;
+    color: white;
+    transition: color 0.3s ease;
+  /* transition: font-size 0.2s ease; */
+}
+  
+  .buttonnav:hover {
+    color: grey;
+  }
+
+ 

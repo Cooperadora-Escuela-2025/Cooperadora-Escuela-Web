@@ -1,0 +1,58 @@
+<header class="header-gradient text-white py-1">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <img src="../../../assets/Cooperadora-Escuela.png" alt="Logo de la cooperadora" class="logo me-3" style="height: 60px;" />
+                <h1 class="h2 mb-0">Cooperadora Escuela</h1>
+            </div>
+
+            
+    <div class="d-flex align-items-center">
+        <!-- menu de perfil -->
+        <div class="d-flex align-items-center me-3" *ngIf="menuProfile">
+  
+        <div class="dropdown me-3">
+      <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" 
+       href="#" 
+       role="button" 
+       id="dropdownUser" 
+       data-bs-toggle="dropdown" 
+       aria-expanded="false">
+      <!-- icono de usuario -->
+      <i class="fas fa-user-circle fa-2x me-2"></i>
+      <span class="sr-only">Perfil</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+
+      <!-- visible solo para admins -->
+      <li *ngIf="isAdminUser">
+        <a class="dropdown-item" [routerLink]="['/admin-panel']">Panel de administrador</a>
+      </li>
+
+      <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
+      <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
+    </ul>
+  </div>
+
+<!-- icono del carrito con cantidad -->
+<a class="d-flex align-items-center text-white text-decoration-none position-relative"
+   [routerLink]="['/cart']"
+   style="cursor: pointer;">
+  <i class="bi bi-cart-fill text-white fs-4 me-2"></i>
+  <span class="sr-only">Carrito</span>
+  <span *ngIf="cartItemCount > 0"
+        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    {{ cartItemCount }}
+  </span>
+</a>
+
+</div>
+<div class="d-flex align-items-center me-3" *ngIf="!menuProfile">
+  <a class="btn btn-outline-light me-2" [routerLink]="['/login']">Iniciar sesión</a>
+  <a class="btn btn-light text-dark" [routerLink]="['/register']">Registrarse</a>
+</div>
+
+      </div>
+        </div>
+    </div>
+</header>
