@@ -12,15 +12,11 @@ body {
 
 body {
     font-family: 'Josefin Sans', sans-serif;
-    /* Aplica la fuente Josefin Sans a todo el cuerpo */
     background-color: #f0f0f0;
-    /* Color de fondo claro (opcional) */
     color: #222;
-    /* Color de texto (opcional) */
     margin: 0;
-    /* Elimina márgenes por defecto */
     padding: 0;
-    /* Elimina padding por defecto */
+  
 }
 
 h1,
@@ -79,14 +75,148 @@ html, body {
   }
   
   footer {
-    margin-top: auto; /* Esto asegura que el footer siempre quede al final de la página */
-    background-color: #343a40; /* Color oscuro para el fondo */
-    color: #fff; /* Color de texto blanco */
-    padding: 20px 0; /* Relleno alrededor del footer */
+    margin-top: auto; 
+    background-color: #343a40; 
+    color: #fff; 
+    padding: 20px 0; 
 }
   
 footer .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
+}
+
+/* accesibilidad */
+.resaltado {
+  background-color: rgb(0, 170, 255) !important;
+  color: black !important;
+  font-weight: bold;
+}
+
+.leyendo {
+  background-color: #ffff99 !important;
+  outline: 2px solid orange;
+  transition: background-color 0.3s ease;
+} 
+
+body.accesible {
+  --bg-color: #000;                  
+  --text-color: #FFD700;              
+  --header-bg: #000;                  
+  --header-text-color: #FFD700;       
+  --nav-bg: #000;                    
+  --nav-text-color: #FFD700;          
+  --footer-bg: #000;                 
+  --footer-text-color: #FFD700;       
+  --btn-outline-color: #FFD700;
+  --btn-outline-bg: black;
+  --btn-solid-bg: #FFD700;
+  --btn-solid-text: #000;
+}
+
+
+body.accesible header,
+body.accesible .header-gradient {
+  background-color: var(--header-bg);
+  color: var(--header-text-color);
+}
+
+body.accesible nav {
+  background-color: var(--nav-bg);
+  color: var(--nav-text-color);
+}
+
+body.accesible footer {
+  background-color: var(--footer-bg);
+  color: var(--footer-text-color);
+}
+
+
+.buttonnav{
+    color: var(--text-color);
+    background-color: var(--btn-outline-bg)!important;
+}
+
+buttonnav:hover{
+  color: var(--text-color)!important;
+}
+
+
+body.accesible a,
+body.accesible h1, 
+body.accesible h2, 
+body.accesible h3,
+body.accesible h4,
+body.accesible h5,
+body.accesible h6,
+body.accesible p,
+body.accesible span
+body.accesible small {
+  color: var(--text-color);
+   background-color: var(--btn-outline-bg);
+}
+
+body{
+  background-color: var(--btn-outline-bg);
+}
+body.accesible .btn-outline-light {
+  color: var(--btn-outline-color);
+  background-color: var(--btn-outline-bg);
+  border: 1px solid var(--btn-outline-color);
+}
+
+.buttonnav,.list-unstyled, .btn-light {
+  color: var(--btn-outline-color);
+  background-color: var(--btn-outline-bg);
+  border: 1px solid var(--btn-outline-color);
+  color: var(--text-color);
+}
+.text-white{
+  color: var(--btn-outline-color);
+  background-color: var(--btn-outline-bg);
+ 
+}
+.text-secondary{
+  color: var(--btn-outline-color)!important;
+  background-color: var(--btn-outline-bg);
+ 
+}
+
+.btn-outline-secondary{
+    color: var(--btn-outline-color);
+  background-color: var(--btn-outline-bg);
+  border: 1px solid var(--btn-outline-color);
+}
+
+
+body.accesible form,
+body.accesible input,
+body.accesible select,
+body.accesible textarea,
+body.accesible label {
+  background-color: #000;           
+  color: #FFD700;                   
+  border-color: #FFD700;
+}
+
+
+body.accesible input::placeholder,
+body.accesible textarea::placeholder {
+  color: #CCCC00;
+}
+
+
+body.accesible input:focus,
+body.accesible select:focus,
+body.accesible textarea:focus {
+  outline: 2px solid #FFD700;
+}
+
+
+body.accesible .card,
+body.accesible .card-body {
+  background-color: #000;
+  color: #FFD700;
+  border: 1px solid #FFD700;
 }

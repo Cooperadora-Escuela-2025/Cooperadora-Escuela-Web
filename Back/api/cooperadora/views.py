@@ -25,6 +25,7 @@ import logging
 from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import AllowAny
+import re
 
 @csrf_exempt
 def contacto(request):
@@ -158,6 +159,17 @@ def login(request):
 #fin iniciar sesion
 
 
+# validar contraseña
+def secure_password(password):
+    if len(password) < 8:
+        return "La contraseña debe tener al menos 8 caracteres."
+    if not re.search(r'[A-Z]', password):
+        return "Debe incluir al menos una letra mayúscula."
+    if not re.search(r'[@$!%*?&._-]', password):
+         return "Debe incluir al menos un carácter especial (@$!%*?&._-)."
+    return None
+# fin contraseña
+
 # registro
 User = get_user_model()
 @csrf_exempt
@@ -173,15 +185,21 @@ def register(request):
             password = data.get('password')
             password2 = data.get('password2')
 
-            #verifica que no falte ningún dato
+            #verifica que no falte datos
             if not all([first_name, last_name, email, password, password2]):
                 return JsonResponse({"error": "Todos los campos son obligatorios."}, status=400)
 
-            #verifica que las contraseñas sean iguales
+            #que las contraseñas sean iguales
             if password != password2:
                 return JsonResponse({"error": "Las contraseñas no coinciden."}, status=400)
+            
+            #  contraseña segura
+            error_password = secure_password(password)
+            if error_password:
+                return JsonResponse({"error": error_password}, status=400)
 
-            #verifica si el email ya existe
+
+            #si el email ya existe
             if User.objects.filter(email=email).exists():
                 return JsonResponse({"error": "El email ya está registrado."}, status=400)
 

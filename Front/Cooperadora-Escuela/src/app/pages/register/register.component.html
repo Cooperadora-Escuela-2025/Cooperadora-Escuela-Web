@@ -1,6 +1,7 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-8">
+        <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']">Volver</button>
         <div class="card shadow rounded-4">
           <div class="card-header">
             <h3 class="card-title text-center text-white">Registro</h3>
@@ -9,7 +10,7 @@
               <strong>Importante:</strong> el <u>nombre y apellido</u> deben ser los del <strong>alumno</strong>, no los del tutor o padre.
              
             <form (ngSubmit)="onRegister()" #registerForm="ngForm">
-              <!-- Nombre y Apellido en la misma fila -->
+           
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <label for="firstName" class="form-label">Nombres</label>
@@ -38,24 +39,32 @@
                 </div>
               </div>
   
-              <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input [(ngModel)]="password" name="password" type="password" class="form-control" id="password"
-                  required minlength="8" #passwordInput="ngModel" />
-                <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-danger">
-                  La contraseña debe tener al menos 8 caracteres.
-                </div>
-              </div>
-  
-              <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
-                <input [(ngModel)]="password2" name="password2" type="password" class="form-control" id="confirmPassword"
-                  required #password2Input="ngModel" />
-                <div *ngIf="password !== password2 && password2Input.touched" class="text-danger">
-                  Las contraseñas no coinciden.
-                </div>
-              </div>
-  
+  <div class="mb-3">
+  <label for="password" class="form-label">Contraseña</label>
+  <div class="input-group">
+    <input [(ngModel)]="password" name="password" [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"required minlength="8" #passwordInput="ngModel" />
+    <button type="button" class="btn btn" (click)="showPassword = !showPassword">
+      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+    </button>
+  </div>
+  <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-danger">
+    La contraseña debe tener al menos 8 caracteres, incluir letras, números y un carácter especial.
+  </div>
+</div>
+
+<div class="mb-3">
+  <label for="confirmPassword" class="form-label">Confirmar contraseña</label>
+  <div class="input-group">
+    <input [(ngModel)]="password2" name="password2" [type]="showPassword2 ? 'text' : 'password'" class="form-control" id="confirmPassword" required #password2Input="ngModel" />
+    <button type="button" class="btn btn" (click)="showPassword2 = !showPassword2">
+      <i class="bi" [ngClass]="showPassword2 ? 'bi-eye-slash' : 'bi-eye'"></i>
+    </button>
+  </div>
+  <div *ngIf="password !== password2 && password2Input.touched" class="text-danger">
+    Las contraseñas no coinciden.
+  </div>
+</div>
+
               <div *ngIf="successMessage" class="alert alert-success mt-3">
                 {{ successMessage }}
               </div>

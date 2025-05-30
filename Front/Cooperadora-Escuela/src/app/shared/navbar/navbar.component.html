@@ -1,7 +1,37 @@
 <nav class="navbar" *ngIf="authService.isLoggedIn()">
-  <a class="buttonnav" routerLink="/home">Home</a>
-  <a class="buttonnav" routerLink="/products">Productos</a>
-  <a class="buttonnav" routerLink="/contact">Contacto</a>
-  <a class="buttonnav" routerLink="/about-us">Quienes somos</a>
-  <a class="buttonnav" routerLink="/app-mobile">Nuestra App</a>
+  <a 
+    class="buttonnav" 
+    routerLink="/home" 
+    routerLinkActive="active-link" 
+    [routerLinkActiveOptions]="{ exact: true }"
+    aria-current="page"
+  >Home</a>
+  
+  <a 
+    class="buttonnav" 
+    routerLink="/products" 
+    routerLinkActive="active-link"
+    aria-current="page"
+  >Productos</a>
+  
+  <a 
+    class="buttonnav" 
+    routerLink="/contact" 
+    routerLinkActive="active-link"
+    aria-current="page"
+  >Contacto</a>
+  
+  <a 
+    class="buttonnav" 
+    routerLink="/about-us" 
+    routerLinkActive="active-link"
+    aria-current="page"
+  >Quienes somos</a>
+  
+  <a 
+    class="buttonnav" 
+    routerLink="/app-mobile" 
+    routerLinkActive="active-link"
+    aria-current="page"
+  >Nuestra App</a>
 </nav>

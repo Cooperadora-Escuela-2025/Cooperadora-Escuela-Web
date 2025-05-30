@@ -1,13 +1,21 @@
-<!-- Solapa de accesibilidad global -->
+
 <div class="solapa-accesibilidad">
   <button (click)="mostrar = !mostrar">♿ Accesibilidad</button>
 
   <div *ngIf="mostrar" class="panel-accesibilidad">
-    <button (click)="leerPantalla()">🔊 Leer toda la página</button>
-    <button (click)="detenerLectura()">⛔ Detener</button>
+    <button (click)="leerPantalla()">Leer toda la página</button>
+    <button (click)="detenerLectura()">Detener</button>
+    <button (click)="aumentarFuente()">Aumentar fuente</button>
+    <button (click)="reducirFuente()">Reducir fuente</button>
+    <button (click)="restaurarFuente()">Fuente por defecto</button>
+ <button class="btn btn-sm btn-secondary" (click)="activarModoAccesible()">Color accesible</button>
+<button class="btn btn-sm btn-outline-secondary" (click)="desactivarModoAccesible()">Color por defecto</button>
+
+
   </div>
 </div>
-<div  class="page-container">
+
+<div  class="page-container" id="contenedor-accesible">
     <app-header></app-header>
     <app-navbar class="navcompt"></app-navbar>
 

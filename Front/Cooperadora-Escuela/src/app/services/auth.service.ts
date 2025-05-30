@@ -52,7 +52,7 @@ export class AuthService {
     // localStorage.removeItem('user_id');
     localStorage.removeItem('user');
     localStorage.removeItem('is_staff');
-    localStorage.removeItem('cart');
+    // localStorage.removeItem('cart');
     this.currentUserSubject.next(null);
     window.location.href = '/login';
   }

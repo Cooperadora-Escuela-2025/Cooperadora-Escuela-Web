@@ -40,6 +40,7 @@ html, body {
   border-radius: 8px;
   margin: 5px 0;
   cursor: pointer;
+  margin-right: 5px;
 }
 
 .panel-accesibilidad {
@@ -50,4 +51,22 @@ html, body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
+/* para el tamaño de letra */
+body.fuente-chica {
+  font-size: 14px;
+}
+
+body.fuente-media {
+  font-size: 16px;
+}
+
+body.fuente-grande {
+  font-size: 18px;
+}
+
+.leyendo {
+  background-color: #ffff99 !important;
+  outline: 2px solid orange;
+  transition: background-color 0.3s ease;
+}
 

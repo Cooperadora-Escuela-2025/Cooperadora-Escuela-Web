@@ -12,16 +12,16 @@
               <div>
                 <h4 class="mb-0">{{ profileForm.get('first_name')?.value }} {{ profileForm.get('last_name')?.value }}
                 </h4>
-                <small class="text-muted">{{ profileForm.get('email')?.value }}</small>
+                <small class="email-accessible">{{ profileForm.get('email')?.value }}</small>
               </div>
-              <button class="btn btn-outline-primary ms-auto" (click)="editMode = !editMode">
+              <button class="btn btn-outline-secondary ms-auto" (click)="editMode = !editMode">
                 {{ editMode ? 'Cancelar' : 'Editar perfil' }}
               </button>
             </div>
 
-            <!-- Vista de datos -->
+            <!-- datos de user -->
             <div *ngIf="!editMode">
-              <h6>Datos personales del alumno</h6>
+              <h5>Datos personales del alumno</h5>
               <p><strong>Nombre:</strong> {{ profileForm.get('first_name')?.value }}</p>
               <p><strong>Apellido:</strong> {{ profileForm.get('last_name')?.value }}</p>
               <p><strong>DNI:</strong> {{ profileForm.get('dni')?.value }}</p>
@@ -30,7 +30,7 @@
               <p><strong>Curso/Año:</strong> {{ profileForm.get('grade_year')?.value }}°</p>
             </div>
 
-            <!-- Formulario de edición -->
+            <!-- form de edit -->
             <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveChanges()" class="mt-4">
               <h6 class="mb-3">Editar información</h6>
               <div class="mb-3">
@@ -94,7 +94,7 @@
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-success" [disabled]="profileForm.invalid">Guardar cambios</button>
+              <button type="submit" class="btn btn-outline-secondary" [disabled]="profileForm.invalid">Guardar cambios</button>
             </form>
 
           </div>
