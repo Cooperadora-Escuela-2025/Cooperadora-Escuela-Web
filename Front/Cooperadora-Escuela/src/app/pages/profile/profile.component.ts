@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileService } from '../../services/profile.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-profile',
@@ -20,7 +21,9 @@ export class ProfileComponent {
   gradeYears = [1, 2, 3, 4, 5];
   editMode = false;
 
-  constructor(private fb: FormBuilder,private profileService: ProfileService) {}
+  constructor(private fb: FormBuilder,private profileService: ProfileService,private titleService: Title) {
+     this.titleService.setTitle('Perfil - Cooperadora Escolar');
+  }
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({

@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
+import { Title } from '@angular/platform-browser';
 
 
 
@@ -29,7 +30,8 @@ export class ProductListComponent implements OnInit {
     private destroyRef: DestroyRef,
     private cartService: CartService, 
     private authService: AuthService,
-  ) { }
+    private titleService: Title
+  ) {  this.titleService.setTitle('Productos - Cooperadora Escolar');}
 
   ngOnInit(): void {
     this.loadProducts(); 
