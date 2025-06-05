@@ -17,9 +17,12 @@
        role="button" 
        id="dropdownUser" 
        data-bs-toggle="dropdown" 
-       aria-expanded="false">
+       aria-expanded="false"
+       aria-label="Menú de usuario">
       <!-- icono de usuario -->
+       
       <i class="fas fa-user-circle fa-2x me-2"></i>
+      <span class="sr-only">Perfil</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
 
@@ -29,21 +32,27 @@
       </li>
 
       <li><a class="dropdown-item" [routerLink]="['/profile']">Mi perfil</a></li>
-      <li><button class="dropdown-item" (click)="logout()">Cerrar sesión</button></li>
+      <li><button class="dropdown-item text-secondary" (click)="logout()">Cerrar sesión</button></li>
     </ul>
   </div>
 
 <!-- icono del carrito con cantidad -->
 <a class="d-flex align-items-center text-white text-decoration-none position-relative"
    [routerLink]="['/cart']"
-   style="cursor: pointer;">
+   style="cursor: pointer;"
+   aria-label="Carrito de compras">
   <i class="bi bi-cart-fill text-white fs-4 me-2"></i>
+  <span class="sr-only">Carrito</span>
   <span *ngIf="cartItemCount > 0"
         class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
     {{ cartItemCount }}
   </span>
 </a>
 
+</div>
+<div class="d-flex align-items-center me-3" *ngIf="!menuProfile">
+  <a class="btn btn-light me-2" [routerLink]="['/login']">Iniciar sesión</a>
+  <a class="btn btn-light" [routerLink]="['/register']">Registrarse</a>
 </div>
 
       </div>

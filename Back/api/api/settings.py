@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from decouple import config
 from pathlib import Path
-
+from datetime import timedelta
 
 # mi token de mp, tiene que cambiarlo por el de ustedes
 MERCADOPAGO_ACCESS_TOKEN = 'APP_USR-6685299325110118-050714-fba3416a732b438437658a2773e94320-2319050859'
@@ -79,6 +79,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # URL de tu aplicación Angular
 ]
 
+#PARA QUE CONECTE CON ANDROID y utilizar su emulador
+ALLOWED_HOSTS = ['*'] #PARA QUE CONECTE CON ANDROID
+
+#si se usa el celular en android utilizar esta linea y comentar la de arriba poner su  “Dirección IPv4”. tambien modificar archivos api en auth y network-security-config en xml
+# y correr django con python manage.py runserver 0.0.0.0:8000 no con python manage.py runserver
+# ALLOWED_HOSTS = ['192tu direccion ipv4.......', 'localhost', '127.0.0.1']
+
+
+
 CORS_ALLOW_ALL_ORIGINS = True
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -145,3 +154,13 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}

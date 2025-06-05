@@ -7,6 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BehaviorSubject } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
+import { Title } from '@angular/platform-browser';
 
 
 
@@ -27,18 +28,19 @@ export class ProductListComponent implements OnInit {
     private productService: ProductService,
     private router: Router,
     private destroyRef: DestroyRef,
-    private cartService: CartService, // Inyectar CartService
+    private cartService: CartService, 
     private authService: AuthService,
-  ) { }
+    private titleService: Title
+  ) {  this.titleService.setTitle('Productos - Cooperadora Escolar');}
 
   ngOnInit(): void {
-    this.loadProducts(); // Cargar los productos al inicializar el componente
+    this.loadProducts(); 
     this.authService.currentUser$.subscribe(user => {
       this.isAdminUser = user?.is_staff || false;
     });
   }
 
-  // Método para cargar los productos desde el backend
+  
   loadProducts() {
     this.productService.getProducts()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -52,19 +54,19 @@ export class ProductListComponent implements OnInit {
       });
   }
 
-  // Método para agregar un producto al carrito
+ 
   addToCart(product: Product): void {
-    this.cartService.addToCart(product); // Usar el servicio para agregar al carrito
+    this.cartService.addToCart(product);
     alert(`${product.name} ha sido agregado al carrito.`);
   }
 
-  // Método para eliminar un producto
+  
   deleteProduct(id: number) {
     this.productService.deleteProduct(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          // Si la eliminación es exitosa, recargar la lista de productos
+         
           this.loadProducts();
           alert('Producto eliminado correctamente.');
         },
@@ -75,9 +77,9 @@ export class ProductListComponent implements OnInit {
       });
   }
 
-  // Método para editar un producto
+ 
   editProduct(product: Product) {
-    this.router.navigate(['/product-form', product.id]); // Navegar a la página de edición
+    this.router.navigate(['/product-form', product.id]); 
   }
 
   saveProduct(){

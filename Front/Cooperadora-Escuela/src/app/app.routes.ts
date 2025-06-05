@@ -27,7 +27,7 @@ import { MobileAppPromoComponent } from './pages/mobile-app-promo/mobile-app-pro
 
 export const routes: Routes = [
   // Rutas protegidas
-  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+  { path: 'home', component: HomeComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'about-us', component: AboutUsComponent,canActivate: [authGuard]  },
   { path: 'contact', component: ContactComponent,canActivate: [authGuard]  },
@@ -38,13 +38,14 @@ export const routes: Routes = [
   { path: 'product-add',component:ProductAddComponent,canActivate: [authGuard] },
   { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
   { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
-  { path: 'procedure',component:ProceduresComponent},
-  { path: 'app-mobile',component:MobileAppPromoComponent},
-  { path: 'success', component: PaymentSuccessComponent },
-  { path: 'failure', component: PaymentFailureComponent },
-  { path: 'pending', component: PaymentPendingComponent },
+  { path: 'procedure',component:ProceduresComponent,canActivate: [authGuard]},
+  { path: 'app-mobile',component:MobileAppPromoComponent,canActivate: [authGuard]},
+  { path: 'success', component: PaymentSuccessComponent,canActivate: [authGuard] },
+  { path: 'failure', component: PaymentFailureComponent,canActivate: [authGuard] },
+  { path: 'pending', component: PaymentPendingComponent,canActivate: [authGuard] },
   // Rutas públicas
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
+  // { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
 

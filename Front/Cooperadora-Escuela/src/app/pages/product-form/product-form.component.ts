@@ -24,7 +24,7 @@ export class ProductFormComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
-    private destroyRef: DestroyRef // Inyectar DestroyRef
+    private destroyRef: DestroyRef 
   ) { }
 
   ngOnInit(): void {
@@ -53,16 +53,16 @@ export class ProductFormComponent implements OnInit {
  const imageInput = document.getElementById('image') as HTMLInputElement;
   const formData = new FormData();
 
-  // Agregamos siempre nombre y precio
+  
   formData.append('name', this.product.name);
   formData.append('price', this.product.price.toString());
 
-  // Revisamos si se seleccionó una imagen nueva
+  
   const file = imageInput?.files?.[0];
   const isImageSelected = !!file;
 
   if (this.isEdit) {
-    // Solo enviamos la imagen si se seleccionó una nueva
+ 
     if (isImageSelected) {
       formData.append('image', file!);
     }
@@ -75,7 +75,7 @@ export class ProductFormComponent implements OnInit {
       });
 
   } else {
-    // En creación, la imagen es obligatoria
+    
     if (!isImageSelected) {
       alert('Por favor, selecciona una imagen.');
       return;

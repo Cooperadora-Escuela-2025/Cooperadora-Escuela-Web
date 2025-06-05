@@ -21,8 +21,31 @@ export class RegisterComponent {
   password2: string = '';
   errorMessage: string = '';
   successMessage: string = '';
+  showPassword: boolean = false;
+  showPassword2: boolean = false;
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService ) {}
+
+  private validatePassword(password: string): string | null {
+    if (password.length < 8) {
+      return 'La contraseña debe tener al menos 8 caracteres.';
+    }
+    if (!/[A-Z]/.test(password)) {
+      return 'La contraseña debe incluir al menos una letra mayúscula.';
+    }
+    if (!/[@$!%*?&._-]/.test(password)) {
+      return 'La contraseña debe incluir al menos un carácter especial (@$!%*?&._-).';
+    }
+    if (!/\d/.test(password)) {
+    return 'La contraseña debe incluir al menos un número.';
+}
+    return null;
+  }
+
+  isPasswordValid(password: string): boolean {
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+}
 
   onRegister(): void {
     this.errorMessage = '';
@@ -33,6 +56,15 @@ export class RegisterComponent {
       return;
     }
 
+  
+    const passwordError = this.validatePassword(this.password);
+    if (passwordError) {
+      this.errorMessage = passwordError;
+      return;
+    }
+
+
+     // si pasa todo se envia al backend
     const userData = {
       first_name: this.firstName,
       last_name: this.lastName,
