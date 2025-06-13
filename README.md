@@ -21,8 +21,7 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 - [Instalación del proyecto](#-instalación-del-proyecto)
 - [Estructura del Proyecto](#️-estructura-del-proyecto)
 - [Funcionalidades principales](#-funcionalidades-principales)
-- [Estado del proyecto](#-estado-del-proyecto)
-- [Licencia](#-licencia)
+
 
 ---
 
@@ -56,8 +55,9 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 - MySQL
 - Git
 
-### 🔹 Clonar el repositorio
+## 🚀 Funcionalidades principales
 
-```bash
-git clone https://github.com/Cooperadora-Escuela-2025/Cooperadora-Escuela-Web.git
-cd Cooperadora-Escuela-Web
+- La plataforma ofrece herramientas para facilitar la interacción entre padres/tutores y la cooperadora escolar, entre ellas:
+> 🛒 Compra de útiles escolares directamente desde la web, sin necesidad de acercarse físicamente a la institución.
+> 💳 Pago de la cuota de cooperadora de forma online y segura.
+> 📥 Recepción de información y novedades importantes enviadas por la institución.
