@@ -58,6 +58,6 @@ Este proyecto tiene como objetivo desarrollar una plataforma web para una cooper
 ## 🚀 Funcionalidades principales
 
 - La plataforma ofrece herramientas para facilitar la interacción entre padres/tutores y la cooperadora escolar, entre ellas:
-> 🛒 Compra de útiles escolares directamente desde la web, sin necesidad de acercarse físicamente a la institución.
-> 💳 Pago de la cuota de cooperadora de forma online y segura.
-> 📥 Recepción de información y novedades importantes enviadas por la institución.
+> - 🛒 Compra de útiles escolares directamente desde la web, sin necesidad de acercarse físicamente a la institución.
+  > - 💳 Pago de la cuota de cooperadora de forma online y segura.
+  > - 📥 Recepción de información y novedades importantes enviadas por la institución.
