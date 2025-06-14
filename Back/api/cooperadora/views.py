@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .models import Profile, Procedure,User,Product, Order, OrderProduct
-from .serializers import AdminUserCreationSerializer, ProcedureSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
+from .models import Cuota, Profile,User,Product, Order, OrderProduct
+from .serializers import AdminUserCreationSerializer, CuotaSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -26,6 +26,13 @@ from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import AllowAny
 import re
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializers import ComprobantePagoSerializer
+
 
 @csrf_exempt
 def contacto(request):
@@ -499,13 +506,173 @@ def register_user_by_admin(request):
 
 
 # tramite
-class ProcedureViewSet(viewsets.ModelViewSet):
-    serializer_class = ProcedureSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# class ProcedureViewSet(viewsets.ModelViewSet):
+#     serializer_class = ProcedureSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return Procedure.objects.filter(user=self.request.user)  # Cambié 'usuario' por 'user'
+#     def get_queryset(self):
+#         return Procedure.objects.filter(user=self.request.user)  # Cambié 'usuario' por 'user'
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
 # fin tramite
+
+# cuota
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def descargar_comprobante(request, cuota_id):
+    cuota = get_object_or_404(Cuota, id=cuota_id, usuario=request.user)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=comprobante_cuota_{cuota.id}.pdf'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    
+    p.setFont("Helvetica-Bold", 18)
+    p.drawCentredString(width / 2, height - 50, "Comprobante de Cuota Cooperadora Escuela")
+    p.setLineWidth(1)
+    p.setStrokeColor(colors.grey)
+    p.line(30, height - 60, width - 30, height - 60)
+
+    # Datos del usuario
+    p.setFont("Helvetica", 12)
+    y = height - 100
+    line_height = 20
+
+    p.drawString(50, y, f"Nombre del alumno: {cuota.usuario.get_full_name() or cuota.usuario.username}")
+    y -= line_height
+    tipo = cuota.get_tipo_display()
+    mes = dict(Cuota.MESES_CHOICES).get(cuota.mes, '') if cuota.mes else ''
+    p.drawString(50, y, f"Tipo de cuota: {tipo}")
+    y -= line_height
+    if mes:
+        p.drawString(50, y, f"Mes: {mes}")
+        y -= line_height
+    p.drawString(50, y, f"Año: {cuota.anio}")
+    y -= line_height
+    p.drawString(50, y, f"Monto: ${cuota.monto}")
+    y -= line_height
+    p.drawString(50, y, f"Estado de pago: {'PAGADO' if cuota.pagado else 'PENDIENTE'}")
+    y -= line_height
+    p.drawString(50, y, f"Fecha de generación: {cuota.fecha_creacion.strftime('%d/%m/%Y')}")
+    y -= line_height
+    p.drawString(50, y, f"Número de comprobante: {cuota.nro_comprobante}")
+    y -= line_height
+
+    
+    y -= 20
+    p.line(30, y, width - 30, y)
+    y -= 30
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Datos para transferencia bancaria:")
+    y -= line_height
+    p.setFont("Helvetica", 12)
+    p.drawString(70, y, "CBU: 0000003100001234567890")
+    y -= line_height
+    p.drawString(70, y, "Alias: cooperadora.escuela")
+    y -= line_height
+    p.drawString(70, y, "Banco: Banco Nación")
+    
+    y -= 30
+    p.setFont("Helvetica-Bold", 11)
+    p.setFillColor(colors.black)
+    p.drawString(50, y, "IMPORTANTE:")
+    y -= line_height
+    p.setFont("Helvetica", 11)
+    p.drawString(50, y, "Una vez abonado, enviar el número de transferencia al email:")
+    y -= line_height
+    p.drawString(50, y, "cooperadora@escuela.edu.ar o al formulario en la sección pagar cuota")
+
+
+    p.setFont("Helvetica-Oblique", 10)
+    p.setFillColor(colors.grey)
+    p.drawCentredString(width / 2, 120, "Gracias por colaborar con la cooperadora escolar.")
+
+    p.showPage()
+    p.save()
+    return response
+
+
+# calculo el monto segun cuota
+def calcular_monto(tipo):
+    return {
+        'mensual': 1000,
+        'anual': 10000
+    }.get(tipo, 0)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def crear_cuota(request):
+    data = request.data
+    tipo = data.get('tipo')
+    mes = data.get('mes') 
+    anio = data.get('anio')
+
+    if not tipo or tipo not in dict(Cuota.TIPO_CHOICES):
+        return Response({'error': 'Tipo inválido'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not anio:
+        return Response({'error': 'Año requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if tipo == 'mensual' and not mes:
+        return Response({'error': 'Mes requerido para cuota mensual'}, status=status.HTTP_400_BAD_REQUEST)
+
+    monto = calcular_monto(tipo)
+
+    cuota = Cuota.objects.create(
+        usuario=request.user,
+        tipo=tipo,
+        mes=mes if tipo == 'mensual' else None,
+        anio=anio,
+        monto=monto
+    )
+
+    serializer = CuotaSerializer(cuota)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+import qrcode
+from io import BytesIO
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def ver_qr_pago(request, cuota_id):
+    cuota = get_object_or_404(Cuota, id=cuota_id, usuario=request.user)
+
+    
+    datos_qr = f"""
+    Nombre: {cuota.usuario.get_full_name() or cuota.usuario.username}
+    Cuota: {cuota.get_tipo_display()} {cuota.mes or ''}/{cuota.anio}
+    Monto: ${cuota.monto}
+    CBU: 0000003100001234567890
+    Alias: cooperadora.escuela
+    """
+
+    # genero el qr
+    qr = qrcode.make(datos_qr)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    return HttpResponse(buffer.getvalue(), content_type="image/png")
+
+
+
+
+
+
+class EnviarComprobanteView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        serializer = ComprobantePagoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)  # <-- asignas el usuario aquí
+            return Response({'mensaje': 'Comprobante guardado correctamente'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
 from cooperadora import views
-from cooperadora.views import ProcedureViewSet,all_profile_view, profile_view,login,register, register_user_by_admin,contacto
+from cooperadora.views import EnviarComprobanteView, all_profile_view, descargar_comprobante, profile_view,login,register, register_user_by_admin,contacto, ver_qr_pago
 from rest_framework_simplejwt import views as jwt_views
 from cooperadora.views import ProductViewSet, UserViewSet, OrderViewSet, CheckoutView, download_orders_excel
 
@@ -16,7 +16,6 @@ router = DefaultRouter()
 router.register(r'products', ProductViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'orders', OrderViewSet,basename='order')
-router.register(r'procedure',ProcedureViewSet, basename='procedure')
 
 
 
@@ -38,7 +37,11 @@ urlpatterns = [
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('contacto/', contacto, name='contacto'),
     # path('create_preference/', create_preference, name='create_preference'),
-     path('payment_status/', views.payment_status, name='payment_status'),
+    path('payment_status/', views.payment_status, name='payment_status'),
+    path('cuota/<int:cuota_id>/comprobante/', descargar_comprobante, name='descargar_comprobante'),
+    path('cuotas/', views.crear_cuota, name='crear_cuota'),
+    path('cuotas/<int:cuota_id>/qr/', ver_qr_pago),
+    path('enviar-comprobante/', EnviarComprobanteView.as_view())
 ]
    
 

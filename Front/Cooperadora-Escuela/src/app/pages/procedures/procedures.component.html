@@ -1,59 +1,106 @@
+<div class="container py-5">
+  <div class="row g-5 shadow rounded p-4">
 
-  <div class="container mt-5" >
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow rounded-4">
-          <div class="card-body p-4">
+    <!-- columna  cuota -->
+    <div class="col-md-6"> 
+      <h2 class="h4 text-center mb-4 ">Pagar cuota</h2>
 
-           
-            <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']">Volver</button>
+      <p class="text-muted text-center mb-4">
+        En esta sección podés generar la cuota que te corresponde.<br>
+        Una vez creada, vas a poder <strong>descargar el comprobante</strong> para realizar el pago.<br>
+        O también podés <strong>pagar directamente escaneando un código QR</strong>.
+      </p>
 
-           
-            <h2>Tus trámites</h2>
+      <div class="mb-3">
+        <label class="form-label">Tipo de cuota:</label>
+        <select [(ngModel)]="tipo" class="form-select">
+          <option value="">Seleccione</option>
+          <option value="mensual">Mensual</option>
+          <option value="anual">Anual</option>
+        </select>
+      </div>
 
-           <p class="text-secondary fst-italic mb-3">
-  En esta sección podrás gestionar certificados de alumno regular, reincorporaciones, mesas de examen y otros trámites escolares.
-</p>
-            <ul>
-              <li *ngFor="let procedure of procedures" class="mb-3 border rounded-3 p-2">
-                <div class="d-flex flex-column">
-                <strong>Tipo de trámite: {{ procedure.procedure_type_display || procedure.procedure_type }}</strong>
-                  <small>Descripción: {{ procedure.description }}</small>
-                  <small>Fecha de inicio: {{ procedure.request_date| date:'dd/MM/yyyy HH:mm' }}</small>
-                  <small>Estado: {{ procedure.status }}</small>
-                </div>
-              </li>
-            </ul>
+      <div class="mb-3" *ngIf="tipo === 'mensual'">
+        <label class="form-label">Mes:</label>
+        <select [(ngModel)]="mes" class="form-select">
+          <option *ngFor="let m of meses" [value]="m.value">{{ m.value }}</option>
+        </select>
+      </div>
 
-            
-            <h3>Solicitar un nuevo trámite</h3>
-            <form (ngSubmit)="createProcedure()">
-              <div class="mb-3">
-                <label for="procedureType" class="form-label">Tipo de trámite:</label>
-                <select id="procedureType" [(ngModel)]="newProcedure.procedure_type" name="procedure_type" class="form-select" required>
-                  <option value="certificado">Certificado de estudiante regular</option>
-                  <option value="reincorporacion">Reincorporación</option>
-                  <option value="mesa_de_examen">Mesa de examen</option>
-                  <option value="otro">Otro</option>
-                </select>
-              </div>
+      <div class="mb-3">
+        <label class="form-label">Año:</label>
+        <input type="number" [(ngModel)]="anio" class="form-control" />
+      </div>
 
-              <div class="mb-3">
-                <label for="description" class="form-label">Descripción:</label>
-                <textarea id="description" [(ngModel)]="newProcedure.description" name="description" class="form-control" required></textarea>
-              </div>
+      <button (click)="crearCuota()" class="btn bg-dark text-white w-100 mb-3">
+        Crear cuota
+      </button>
 
-              <button type="submit" class="btn btn-success">Solicitar trámite</button>
-            </form>
-            <div *ngIf="successMessageShown" class="alert alert-success mt-3" role="alert">
-  Tu trámite fue enviado con éxito. Recibirás una respuesta a la brevedad en tu correo electrónico.
-</div>
+      <div *ngIf="mensaje" class="alert alert-success text-center py-2">{{ mensaje }}</div>
 
-          </div>
-        </div>
+      <button *ngIf="cuotaCreada && !mostrarQR" (click)="cargarQr(cuotaCreada.id)" class="btn bg-dark text-white w-100 mb-3">
+        Ver Código QR
+      </button>
+
+      <button *ngIf="cuotaCreada" (click)="descargarComprobante()" class="btn bg-dark text-white w-100 mb-3">
+        Descargar comprobante
+      </button>
+
+      <div *ngIf="mostrarQR" class="text-center">
+        <img [src]="qrUrl" alt="Código QR para pago" class="img-fluid rounded" style="max-width: 250px;" />
       </div>
     </div>
+
+    <!-- columna comprobante -->
+    <div class="col-md-6">
+      <h2 class="h4 text-center mb-4">Enviar comprobante de pago</h2>
+
+      <div class="mb-3">
+        <label class="form-label">Nombre del alumno:</label>
+        <input type="text" [value]="alumno.first_name" readonly class="form-control bg-light" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Apellido del alumno:</label>
+        <input type="text" [value]="alumno.last_name" readonly class="form-control bg-light" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">DNI del alumno:</label>
+        <input type="text" [value]="alumno.dni" readonly class="form-control bg-light" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Nombre del responsable:</label>
+        <input type="text" [(ngModel)]="tutorNombre" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Apellido del responsable:</label>
+        <input type="text" [(ngModel)]="tutorApellido" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">DNI del responsable:</label>
+        <input type="text" [(ngModel)]="tutorDni" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Parentesco:</label>
+        <input type="text" [(ngModel)]="parentesco" placeholder="Ej: Madre, Padre, Tutor" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Seleccionar archivo (PDF o imagen):</label>
+        <input #fileInput type="file" (change)="onFileSelected($event)" accept=".pdf,image/*" class="form-control" />
+      </div>
+
+      <button (click)="enviarComprobante()" class="btn bg-dark text-white w-100 mb-3">
+        Enviar comprobante
+      </button>
+
+      <div *ngIf="mensaje" class="alert alert-success text-center py-2">{{ mensaje }}</div>
+    </div>
+
   </div>
-
-  
-
+</div>

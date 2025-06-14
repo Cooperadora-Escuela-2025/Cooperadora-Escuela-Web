@@ -27,9 +27,8 @@ export class LoginComponent implements OnInit  {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,private titleService: Title
-  ) {
-     this.titleService.setTitle('Login - Cooperadora Escolar');
+    private route: ActivatedRoute) {
+     
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, OrderProduct, Procedure, Product, User,Profile
+from .models import ComprobantePago, Cuota, Order, OrderProduct, Product, User,Profile
 
 # serializer usuario
 class UserSerializer(serializers.ModelSerializer):
@@ -84,13 +84,13 @@ class OrderSerializer(serializers.ModelSerializer):
     
     
 # serializer tramite
-class ProcedureSerializer(serializers.ModelSerializer):
-    procedure_type_display = serializers.CharField(source='get_procedure_type_display', read_only=True)
+# class ProcedureSerializer(serializers.ModelSerializer):
+#     procedure_type_display = serializers.CharField(source='get_procedure_type_display', read_only=True)
 
-    class Meta:
-        model = Procedure
-        fields = '__all__'
-        read_only_fields = ['user', 'request_date']
+#     class Meta:
+#         model = Procedure
+#         fields = '__all__'
+#         read_only_fields = ['user', 'request_date']
         
         
 # serializer para admin
@@ -119,3 +119,26 @@ class AdminUserCreationSerializer(serializers.Serializer):
         )
         Profile.objects.create(user=user)
         return user
+    
+
+class CuotaSerializer(serializers.ModelSerializer):
+    mes_display = serializers.SerializerMethodField()
+    tipo_display = serializers.CharField(source='get_tipo_display', read_only=True)
+
+    class Meta:
+        model = Cuota
+        fields = [
+            'id', 'tipo', 'tipo_display', 'mes', 'mes_display',
+            'anio', 'monto', 'pagado', 'fecha_pago', 'fecha_creacion'
+        ]
+        read_only_fields = ['id', 'monto', 'pagado', 'fecha_pago', 'fecha_creacion']
+
+    def get_mes_display(self, obj):
+        return dict(Cuota.MESES_CHOICES).get(obj.mes, '') if obj.mes else ''
+
+
+class ComprobantePagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComprobantePago
+        fields = '__all__'
+        read_only_fields = ('user',)

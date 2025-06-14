@@ -8,13 +8,14 @@ import { BehaviorSubject } from 'rxjs';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../services/auth.service';
 import { Title } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css'
 })
@@ -23,6 +24,8 @@ export class ProductListComponent implements OnInit {
   products: Product[] = [];
   product: Product = { id: 0, name: '', price: 0, image: '' };
   isAdminUser: boolean = false;
+  searchTerm: string = '';
+  filteredProducts: Product[] = []; 
 
   constructor(
     private productService: ProductService,
@@ -30,8 +33,8 @@ export class ProductListComponent implements OnInit {
     private destroyRef: DestroyRef,
     private cartService: CartService, 
     private authService: AuthService,
-    private titleService: Title
-  ) {  this.titleService.setTitle('Productos - Cooperadora Escolar');}
+   
+  ) { }
 
   ngOnInit(): void {
     this.loadProducts(); 
@@ -47,6 +50,7 @@ export class ProductListComponent implements OnInit {
       .subscribe({
         next: (data: Product[]) => {
           this.products = data;
+          this.filteredProducts = data;
         },
         error: (error) => {
           console.error('Error al cargar los productos:', error);
@@ -86,4 +90,15 @@ export class ProductListComponent implements OnInit {
     this.router.navigate(['/product-add']);
   }
 
+  filterProducts() {
+  const term = this.searchTerm.toLowerCase().trim();
+  if (!term) {
+    this.filteredProducts = [...this.products];
+    return;
+  }
+
+  this.filteredProducts = this.products.filter(product =>
+    product.name.toLowerCase().includes(term)
+  );
+}
 }
