@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .models import Cuota, Profile,User,Product, Order, OrderProduct
-from .serializers import AdminUserCreationSerializer, CuotaSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
+from .models import Cuota, Profile, Purchase, Reservation,User,Product, Order, OrderProduct
+from .serializers import AdminUserCreationSerializer, CuotaSerializer, PurchaseSerializer, ReservationSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -32,6 +32,7 @@ from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import ComprobantePagoSerializer
+from rest_framework.decorators import action
 
 
 @csrf_exempt
@@ -277,6 +278,8 @@ class CheckoutView(APIView):
             try:
                 order = serializer.save()
                 logger.info("Orden guardada")
+                
+                Purchase.objects.create(user=request.user, order=order)
 
                 sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
@@ -662,10 +665,7 @@ def ver_qr_pago(request, cuota_id):
     return HttpResponse(buffer.getvalue(), content_type="image/png")
 
 
-
-
-
-
+# 
 class EnviarComprobanteView(APIView):
     permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser, FormParser]
@@ -673,6 +673,58 @@ class EnviarComprobanteView(APIView):
     def post(self, request):
         serializer = ComprobantePagoSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)  # <-- asignas el usuario aquí
+            serializer.save(user=request.user) 
             return Response({'mensaje': 'Comprobante guardado correctamente'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# historial de compra
+class PurchaseHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        purchases = Purchase.objects.filter(user=request.user).order_by('-created_at')
+
+        data = []
+        for purchase in purchases:
+            order = purchase.order
+            products = []
+            for op in order.orderproduct_set.all():
+                products.append({
+                    'product_id': op.product.id,
+                    'product_name': op.product.name,
+                    'unit_price': op.unit_price,
+                    'quantity': op.quantity,
+                })
+
+            data.append({
+                'purchase_id': purchase.id,
+                'created_at': purchase.created_at.strftime('%Y-%m-%d %H:%M'),
+                'order': {
+                    'id': order.id,
+                    'name': order.name,
+                    'surname': order.surname,
+                    'dni': order.dni,
+                    'total': order.total,
+                    'payment_method': order.payment_method,
+                    'products': products,
+                }
+            })
+
+        return Response(data)
+    
+class ReservationViewSet(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    @action(detail=False, methods=['get'], url_path='usuario')
+    def reservas_del_usuario(self, request):
+        reservas = self.get_queryset()  
+        serializer = self.get_serializer(reservas, many=True)
+        return Response(serializer.data)

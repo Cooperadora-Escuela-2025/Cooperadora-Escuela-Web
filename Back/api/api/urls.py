@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from django.conf import settings
 from django.conf.urls.static import static
 from cooperadora import views
-from cooperadora.views import EnviarComprobanteView, all_profile_view, descargar_comprobante, profile_view,login,register, register_user_by_admin,contacto, ver_qr_pago
+from cooperadora.views import EnviarComprobanteView, PurchaseHistoryView, ReservationViewSet, all_profile_view, descargar_comprobante, profile_view,login,register, register_user_by_admin,contacto, ver_qr_pago
 from rest_framework_simplejwt import views as jwt_views
 from cooperadora.views import ProductViewSet, UserViewSet, OrderViewSet, CheckoutView, download_orders_excel
 
@@ -16,6 +16,7 @@ router = DefaultRouter()
 router.register(r'products', ProductViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'orders', OrderViewSet,basename='order')
+router.register(r'reservas', ReservationViewSet)
 
 
 
@@ -41,7 +42,9 @@ urlpatterns = [
     path('cuota/<int:cuota_id>/comprobante/', descargar_comprobante, name='descargar_comprobante'),
     path('cuotas/', views.crear_cuota, name='crear_cuota'),
     path('cuotas/<int:cuota_id>/qr/', ver_qr_pago),
-    path('enviar-comprobante/', EnviarComprobanteView.as_view())
+    path('enviar-comprobante/', EnviarComprobanteView.as_view()),
+    path('history/', PurchaseHistoryView.as_view(), name='purchase-history')
+    
 ]
    
 

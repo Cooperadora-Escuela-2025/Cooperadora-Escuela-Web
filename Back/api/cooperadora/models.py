@@ -56,23 +56,6 @@ class OrderProduct(models.Model):
         return f"{self.product.name} - ${self.unit_price} x {self.quantity}"
     
     
-# definicion de modelo tramite
-# class Procedure(models.Model):
-#     PROCEDURE_TYPE_CHOICES = [
-#         ('certificado', 'Certificado de estudiante Regular'),
-#         ('reincorporacion', 'Reincorporación'),
-#         ('mesa de examen', 'Mesa de Examen'),
-#         ('otro', 'Otro'),
-#     ]
-    
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)  
-#     procedure_type = models.CharField(max_length=50, choices=PROCEDURE_TYPE_CHOICES)
-#     description = models.TextField(blank=True)
-#     request_date = models.DateTimeField(auto_now_add=True)
-#     status = models.CharField(max_length=20, default='Pendiente') 
-
-#     def __str__(self):
-#         return f"{self.user.username} - {self.procedure_type}
 
 # definicion de modelo cuota
 class Cuota(models.Model):
@@ -107,7 +90,7 @@ class Cuota(models.Model):
             self.nro_comprobante = f"CMP-{uuid.uuid4().hex[:8].upper()}"
         super().save(*args, **kwargs)
         
-    # comprobante
+# comprobante de cuota
 class ComprobantePago(models.Model):
         user = models.ForeignKey(User, on_delete=models.CASCADE)
         alumno_nombre = models.CharField(max_length=100)
@@ -121,3 +104,33 @@ class ComprobantePago(models.Model):
 
         archivo = models.FileField(upload_to='comprobantes/')
         fecha_envio = models.DateTimeField(auto_now_add=True)
+
+
+# historial de compra
+class Purchase(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchases')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='purchases')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} compró la orden #{self.order.id} el {self.created_at.date()}"
+    
+    
+# modelo reservacion
+class Reservation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reserved_for_date = models.DateField()
+    notes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reserva #{self.id} de {self.user} para el {self.reserved_for_date}"
+    
+# tabla intermedia
+class ReservationProduct(models.Model):
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} en reserva {self.reservation.id}"

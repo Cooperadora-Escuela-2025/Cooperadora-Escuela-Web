@@ -110,3 +110,82 @@
     </div>
   </ng-template>
 </main>
+
+
+<!-- boton para abrir modal -->
+<div class="container mt-3 mb-5 text-center">
+  <button class="btn btn-outline-secondary" (click)="openPurchaseHistory()">Ver historial de compras</button>
+  <button class="btn btn-outline-secondary" (click)="openReservationHistory()">Ver historial de reservas</button>
+</div>
+
+
+<!-- historial de compras -->
+<div class="modal fade" id="purchaseHistoryModal" tabindex="-1" aria-labelledby="purchaseHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="purchaseHistoryModalLabel">Historial de compras</h5>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="closePurchaseHistory()"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="purchaseHistory?.length; else noPurchases">
+          <div *ngFor="let purchase of purchaseHistory" class="mb-3 border-bottom pb-2">
+            <!-- <p><strong>ID Compra:</strong> {{ purchase.id }}</p> -->
+            <p><strong>Fecha:</strong> {{ purchase.created_at }}</p>
+           
+            <p><strong>Total:</strong> ${{ purchase.order.total }}</p>
+            <p><strong>Método de pago:</strong> {{ purchase.order.payment_method }}</p>
+            <ul>
+              <li *ngFor="let prod of purchase.order.products">
+                {{ prod.product_name || prod.product }} - Precio unitario: ${{ prod.unit_price }} x Cantidad: {{ prod.quantity }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ng-template #noPurchases>
+          <p>No hay compras para mostrar.</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closePurchaseHistory()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- historial de reservas -->
+<div class="modal fade" id="reservationHistoryModal" tabindex="-1" aria-labelledby="reservationHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reservationHistoryModalLabel">Historial de reservas</h5>
+        <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeReservationHistory()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Mensaje explicativo -->
+        <p class="alert alert-info">
+          Para finalizar el proceso, acercate a la cooperadora del colegio para abonar y retirar tu reserva.
+        </p>
+
+        <div *ngIf="reservas?.length; else noReservations">
+          <div *ngFor="let reserva of reservas" class="mb-3 border-bottom pb-2">
+            <p><strong>Fecha reservada:</strong> {{ reserva.reserved_for_date | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Notas:</strong> {{ reserva.notes || 'Sin notas' }}</p>
+            <p><strong>Estado:</strong> {{ reserva.status || 'Pendiente' }}</p>
+            <ul>
+              <li *ngFor="let item of reserva.items">
+                Producto: {{ item.product_name || item.product }} - Cantidad: {{ item.quantity }}
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ng-template #noReservations>
+          <p>No hay reservas para mostrar.</p>
+        </ng-template>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeReservationHistory()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
