@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, Router, RouterModule, NavigationEnd, NavigationStart } from '@angular/router';
+import { RouterOutlet, Router, RouterModule, NavigationEnd, NavigationStart, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { Title } from '@angular/platform-browser';
+import { filter, map, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -22,8 +24,9 @@ export class AppComponent {
 
   //tamaño de fuente
   tamanioFuente = 16;
+  currentTitle: string = '';
 
-  constructor(private router: Router) {
+  constructor(private router: Router,private titleService: Title,private activatedRoute: ActivatedRoute) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.showFooter = !['/login','/register'].includes(event.urlAfterRedirects);
@@ -91,4 +94,22 @@ desactivarModoAccesible() {
   document.body.classList.remove('accesible');
 }
 
+ngOnInit() {
+  this.router.events
+    .pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(() => {
+        let route = this.activatedRoute;
+        while (route.firstChild) route = route.firstChild;
+        return route;
+      }),
+      mergeMap(route => route.data)
+    )
+    .subscribe(data => {
+      if (data['title']) {
+        this.titleService.setTitle(data['title']); 
+        this.currentTitle = data['title'];
+      }
+    });
+}
 }

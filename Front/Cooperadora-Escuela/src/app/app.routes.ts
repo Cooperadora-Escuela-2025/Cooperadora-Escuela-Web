@@ -27,30 +27,30 @@ import { MobileAppPromoComponent } from './pages/mobile-app-promo/mobile-app-pro
 
 export const routes: Routes = [
   // Rutas protegidas
-  { path: 'home', component: HomeComponent },
-  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-  { path: 'about-us', component: AboutUsComponent,canActivate: [authGuard]  },
-  { path: 'contact', component: ContactComponent,canActivate: [authGuard]  },
+  { path: 'home', component: HomeComponent,title: 'Inicio' },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard], title: 'Perfil del Estudiante'  },
+  { path: 'about-us', component: AboutUsComponent,canActivate: [authGuard], title: 'Quienes Somos'  },
+  { path: 'contact', component: ContactComponent,canActivate: [authGuard], title: 'Contacto'  },
   { path: 'list-users', component: ListUsersComponent,canActivate: [authGuard]  },
-  { path: 'products', component: ProductListComponent,canActivate: [authGuard]  },
-  { path: 'cart',component:CartComponent,canActivate: [authGuard]},
+  { path: 'products', component: ProductListComponent,canActivate: [authGuard], title: 'Productos'  },
+  { path: 'cart',component:CartComponent,canActivate: [authGuard], title: 'Carrito de Compras'},
   { path: 'product-form/:id',component:ProductFormComponent,canActivate: [authGuard] },//coregir la ruta, agregarle el id
   { path: 'product-add',component:ProductAddComponent,canActivate: [authGuard] },
   { path: 'admin-panel',component:AdminPanelComponent,canActivate: [authGuard] },
-  { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard] },
-  { path: 'procedure',component:ProceduresComponent,canActivate: [authGuard]},
-  { path: 'app-mobile',component:MobileAppPromoComponent,canActivate: [authGuard]},
-  { path: 'success', component: PaymentSuccessComponent,canActivate: [authGuard] },
-  { path: 'failure', component: PaymentFailureComponent,canActivate: [authGuard] },
-  { path: 'pending', component: PaymentPendingComponent,canActivate: [authGuard] },
+  { path: 'checkout',component:CheckoutComponent,canActivate: [authGuard], title: 'Finalizar Compra' },
+  { path: 'procedure',component:ProceduresComponent,canActivate: [authGuard], title: 'Cuota de Cooperadora'},
+  { path: 'app-mobile',component:MobileAppPromoComponent,canActivate: [authGuard], title: 'Descargar App Móvil'},
+  { path: 'success', component: PaymentSuccessComponent,canActivate: [authGuard], title: 'Pago Exitoso' },
+  { path: 'failure', component: PaymentFailureComponent,canActivate: [authGuard], title: 'Pago Fallido' },
+  { path: 'pending', component: PaymentPendingComponent,canActivate: [authGuard] , title: 'Pago Pendiente'},
   // Rutas públicas
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent , title: 'Inicio'},
   // { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent, title: 'Iniciar Sesión' },
+  { path: 'register', component: RegisterComponent, title: 'Registrarse' },
 
   //  aca iria la ruta de error
-  { path: '**', component:Error404Component },
+  { path: '**', component:Error404Component, title: 'Página no encontrada' },
 ];
 
 @NgModule({

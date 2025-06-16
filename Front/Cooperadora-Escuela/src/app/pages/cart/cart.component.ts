@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/product.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, formatDate } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 
@@ -51,4 +51,44 @@ export class CartComponent implements OnInit {
   goToProducts(): void {
   this.router.navigate(['/products']);
   }
+
+  reservarProductos() {
+    const fecha = prompt(
+      "¿Para qué fecha querés reservar? (formato DD-MM-AAAA)",
+      formatDate(new Date(), 'dd-MM-yyyy', 'en')
+    );
+    if (!fecha) return;
+
+    const partes = fecha.split('-');
+    if (partes.length !== 3) {
+      alert('Formato incorrecto. Debe ser DD-MM-AAAA');
+      return;
+    }
+
+    const fechaIso = `${partes[2]}-${partes[1]}-${partes[0]}`;
+
+    const notas = prompt("¿Querés dejar alguna nota para la reserva?") || '';
+
+    const items = this.cart.map(product => ({
+      product: product.id,
+      quantity: product.quantity
+    }));
+
+    const reserva = {
+      reserved_for_date: fechaIso,
+      notes: notas,
+      items: items
+    };
+
+    this.cartService.reservarProductos(reserva).subscribe({
+      next: res => {
+        alert('✅ ¡Reserva creada con éxito! Para ver más información sobre tu reserva, por favor visita tu perfil.');
+        this.clearCart();
+      },
+      error: err => {
+        console.error('❌ Error al crear la reserva:', err);
+        alert('Hubo un problema al hacer la reserva.');
+      }
+    });
+}
 }

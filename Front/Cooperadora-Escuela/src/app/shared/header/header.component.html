@@ -17,8 +17,10 @@
        role="button" 
        id="dropdownUser" 
        data-bs-toggle="dropdown" 
-       aria-expanded="false">
+       aria-expanded="false"
+       aria-label="Menú de usuario">
       <!-- icono de usuario -->
+       
       <i class="fas fa-user-circle fa-2x me-2"></i>
       <span class="sr-only">Perfil</span>
     </a>
@@ -37,7 +39,8 @@
 <!-- icono del carrito con cantidad -->
 <a class="d-flex align-items-center text-white text-decoration-none position-relative"
    [routerLink]="['/cart']"
-   style="cursor: pointer;">
+   style="cursor: pointer;"
+   aria-label="Carrito de compras">
   <i class="bi bi-cart-fill text-white fs-4 me-2"></i>
   <span class="sr-only">Carrito</span>
   <span *ngIf="cartItemCount > 0"
