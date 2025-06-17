@@ -20,9 +20,11 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/')
-    
+    quantity = models.PositiveIntegerField(default=0)
+
     def __str__(self):
-        return f"Producto: {self.name}, Precio: ${self.price}, Imagen: {self.image}"
+        return f"Producto: {self.name}, Precio: ${self.price}, Imagen: {self.image}, quantity: {self.quantity}"
+
 
 
 
@@ -39,7 +41,10 @@ class Order(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS, default='efectivo')
     products = models.ManyToManyField(Product, through='OrderProduct')
-
+    # Se agregan preference_id y status para stock
+    preference_id = models.CharField(max_length=100, null=True, blank=True)
+    status = models.CharField(max_length=20, default='pendiente')
+    
     def __str__(self):
         products_list = ", ".join([op.product.name for op in self.orderproduct_set.all()])  # Accede a los productos a través de OrderProduct
         return f"Orden: {self.name} {self.surname}, DNI: {self.dni}, Total: ${self.total}, Productos: {products_list}"  # Paréntesis de cierre añadido

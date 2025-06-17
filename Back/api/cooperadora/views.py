@@ -250,7 +250,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         product = get_object_or_404(Product, pk=pk)
         product.name = request.data.get('name', product.name)
         product.price = request.data.get('price', product.price)
-    
+
+        if 'quantity' in request.data:
+            product.quantity = request.data.get('quantity', product.quantity)
+        
         if 'image' in request.FILES:
             product.image = request.FILES['image']  
 
@@ -278,19 +281,26 @@ class CheckoutView(APIView):
             try:
                 order = serializer.save()
                 logger.info("Orden guardada")
-                
+
                 Purchase.objects.create(user=request.user, order=order)
 
+                # Si es efectivo, simplemente marcar como pagado
+                if order.payment_method == 'efectivo':
+                    order.status = 'pagado'
+                    order.save()
+                    return Response({'message': 'Compra en efectivo realizada y stock actualizado'}, status=status.HTTP_201_CREATED)
+
+                # Si es MercadoPago, crear preferencia
                 sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
                 items = []
                 for order_product in OrderProduct.objects.filter(order=order):
                     items.append({
-        'title': order_product.product.name,
-        'quantity': order_product.quantity,
-        'unit_price': float(order_product.unit_price),
-        'currency_id': 'ARS'
-    })
+                        'title': order_product.product.name,
+                        'quantity': order_product.quantity,
+                        'unit_price': float(order_product.unit_price),
+                        'currency_id': 'ARS'
+                    })
 
                 logger.info(f"Items: {items}")
 
@@ -304,11 +314,11 @@ class CheckoutView(APIView):
                 }
 
                 preference_response = sdk.preference().create(preference_data)
-                logger.info(f"Respuesta MercadoPago: {preference_response}") #muestra el error por consola
+                logger.info(f"Respuesta MercadoPago: {preference_response}")
 
                 if preference_response["status"] == 201:
                     preference_url = preference_response["response"]["init_point"]
-                    logger.info(f"URL de pago: {preference_url}")  
+                    logger.info(f"URL de pago: {preference_url}")
                     return Response({"payment_url": preference_url}, status=status.HTTP_201_CREATED)
                 else:
                     logger.error(f"Error en la creación de la preferencia: {preference_response}")
@@ -319,6 +329,7 @@ class CheckoutView(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # fin checkout  
 
 # status
@@ -344,6 +355,20 @@ def payment_status(request):
                 if status_pago == "approved":
                     order.status = "pagado"
                     order.save()
+                    
+                    # DESCONTAR STOCK 
+                    for order_product in OrderProduct.objects.filter(order=order):
+                        product = order_product.product
+                        if product.quantity < order_product.quantity:
+                                raise ValueError(f"No hay suficiente stock para el producto {product.name}")
+                        product.quantity -= order_product.quantity
+                        product.save()
+                        
+                    else:
+                            return JsonResponse({
+                                "error": f"Stock insuficiente para el producto {product.name}"
+                            }, status=400)
+                    
             except Order.DoesNotExist:
                 return JsonResponse({"error": "Orden no encontrada"}, status=404)
 

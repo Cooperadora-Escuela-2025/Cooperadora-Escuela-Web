@@ -41,7 +41,7 @@ export class CheckoutComponent implements OnInit {
     );
   }
 
-  submitOrder(): void {
+submitOrder(): void {
   const order = {
     name: this.name,
     surname: this.surname,
@@ -52,69 +52,45 @@ export class CheckoutComponent implements OnInit {
       product: product.id,
       unit_price: product.price,
       quantity: product.quantity || 1,
-
     })),
   };
 
+  console.log('Datos enviados al backend:', order);
 
+  this.apiService.createOrder(order).subscribe({
+    next: (response) => {
+      if (this.paymentMethod === 'mercadopago') {
+        if (response && response.payment_url) {
+          window.location.href = response.payment_url; // Redirige a MercadoPago
+        } else {
+          alert('Error al generar la preferencia de pago');
+        }
+      } else {
+        alert(`Compra con ${this.paymentMethod} exitosa.`);
+        this.cartService.clearCart();
+        this.router.navigate(['/products']);
+      }
+    },
+    error: (error) => {
+    console.error('Error al crear la orden:', error);
 
-  if (this.paymentMethod === 'mercadopago') {
-    // Primero guardar la orden (opcional según tu lógica)
-    // this.apiService.createOrder(order).subscribe({
-    //   next: () => {
-    //     // Luego crear la preferencia de Mercado Pago
-    //     this.http.post<{ init_point: string }>('http://localhost:8000/create_preference/', order).subscribe({
-    //       next: (response) => {
-    //         window.location.href = response.init_point; // Redirige a Mercado Pago
-    //       },
-    //       error: (error) => {
-    //         console.error('Error creando preferencia de pago:', error);
-    //         alert('No se pudo iniciar el pago con Mercado Pago.');
-    //       }
-    //     });
-    //   },
-    //   error: (error) => {
-    //     console.error('Error al crear la orden:', error);
-    //     alert('Hubo un error al procesar la orden.');
-    //   },
-    // });
-    this.apiService.createOrder(order).subscribe(response => {
-  if (response && response.payment_url) {
-    window.location.href = response.payment_url; // Redirige a Mercado Pago
-  } else {
-    alert('Error al generar la preferencia de pago');
+    if (error.error) {
+      if (typeof error.error === 'string') {
+        alert(error.error);
+      } else if (error.error.products) {
+        alert(error.error.products.join('\n'));
+      } else if (error.error.detail) {
+        alert(error.error.detail);
+      } else {
+        alert('Hubo un error al procesar la orden.');
+      }
+    } else {
+      alert('Hubo un error al procesar la orden.');
+    }
   }
 });
-  } else {
-    // Flujo para pago en efectivo
-    this.apiService.createOrder(order).subscribe({
-      next: () => {
-        alert(`Compra con ${this.paymentMethod} exitosa.`);
-        this.cartService.clearCart();
-        this.router.navigate(['/products']);
-      },
-      error: (error) => {
-        console.error('Error al crear la orden:', error);
-        alert('Hubo un error al procesar la orden.');
-      },
-    });
-  }
+}
 
-
-    console.log('Datos enviados al backend:', order);
-
-    this.apiService.createOrder(order).subscribe({
-      next: () => {
-        alert(`Compra con ${this.paymentMethod} exitosa.`);
-        this.cartService.clearCart();
-        this.router.navigate(['/products']);
-      },
-      error: (error) => {
-        console.error('Error al crear la orden:', error);
-        alert('Hubo un error al procesar la orden.');
-      },
-    });
-  }
 
   goToProductList(): void {
     this.router.navigate(['/products']);

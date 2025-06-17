@@ -3,7 +3,6 @@ export interface Order {
   surname: string;
   dni: string;
   total: number;
-  pyment_id:string;
   payment_method: string;
   products: OrderedProduct[];
 }

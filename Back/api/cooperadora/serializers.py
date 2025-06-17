@@ -47,13 +47,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
         
-        
-# serializer producto      
+            
 # serializer producto      
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'image']
+        fields = ['id', 'name', 'price', 'image', 'quantity']
 
 
 # serializer ordenproducto
@@ -66,21 +65,46 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 # serializer orden      
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderProductSerializer(many=True)  # Usar OrderProductSerializer para los productos
+    products = OrderProductSerializer(many=True)
 
     class Meta:
         model = Order
         fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products']
 
-    def create(self, validated_data):
-        products_data = validated_data.pop('products')  # Extraer los datos de los productos
-        order = Order.objects.create(**validated_data)  # Crear la orden
+    def validate(self, data):
+        # Validar stock para cada producto antes de crear la orden
+        for item in data['products']:
+            product = item['product']
+            quantity = item['quantity']
 
-        # Crear los OrderProduct asociados
+            if product.quantity < quantity:
+                raise serializers.ValidationError({
+    "products": [f"Sin stock suficiente para {product.name} (stock disponible: {product.quantity})"]
+})
+        return data
+
+    def create(self, validated_data):
+        products_data = validated_data.pop('products')
+        order = Order.objects.create(**validated_data)
+
         for product_data in products_data:
-            OrderProduct.objects.create(order=order, **product_data)
+            product = product_data['product']
+            quantity = product_data['quantity']
+
+            # Descontar stock
+            product.quantity -= quantity
+            product.save()
+
+            # Crear relación
+            OrderProduct.objects.create(
+                order=order,
+                product=product,
+                unit_price=product_data['unit_price'],
+                quantity=quantity
+            )
 
         return order
+
     
 # serializer tramite
 # class ProcedureSerializer(serializers.ModelSerializer):
