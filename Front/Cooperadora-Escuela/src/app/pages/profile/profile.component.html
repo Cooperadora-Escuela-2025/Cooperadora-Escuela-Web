@@ -4,24 +4,24 @@
       <div class="col-md-8">
         <div class="card shadow rounded-4">
           <div class="card-body p-4">
-            <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']">Volver</button>
+            <button class="btn btn-outline-secondary mb-3" [routerLink]="['/home']" aria-label="Volver al inicio">Volver</button>
 
             <div class="d-flex align-items-center mb-4">
               <img src="../../../assets/icon-user.png" class="rounded-circle me-3" alt="Foto de perfil"
                 style="width: 80px; height: 80px; object-fit: cover; background-color: #f0f0f0;">
               <div>
-                <h4 class="mb-0">{{ profileForm.get('first_name')?.value }} {{ profileForm.get('last_name')?.value }}
-                </h4>
+                <h2 class="mb-0">{{ profileForm.get('first_name')?.value }} {{ profileForm.get('last_name')?.value }}</h2>
                 <small class="email-accessible">{{ profileForm.get('email')?.value }}</small>
               </div>
-              <button class="btn btn-outline-secondary ms-auto" (click)="editMode = !editMode">
+              <button class="btn btn-outline-secondary ms-auto"
+                      (click)="editMode = !editMode"
+                      [attr.aria-label]="editMode ? 'Cancelar edición de perfil' : 'Editar perfil'">
                 {{ editMode ? 'Cancelar' : 'Editar perfil' }}
               </button>
             </div>
 
-            <!-- datos de user -->
             <div *ngIf="!editMode">
-              <h5>Datos personales del alumno</h5>
+              <h3>Datos personales del alumno</h3>
               <p><strong>Nombre:</strong> {{ profileForm.get('first_name')?.value }}</p>
               <p><strong>Apellido:</strong> {{ profileForm.get('last_name')?.value }}</p>
               <p><strong>DNI:</strong> {{ profileForm.get('dni')?.value }}</p>
@@ -30,109 +30,108 @@
               <p><strong>Curso/Año:</strong> {{ profileForm.get('grade_year')?.value }}°</p>
             </div>
 
-            <!-- form de edit -->
             <form *ngIf="editMode" [formGroup]="profileForm" (ngSubmit)="saveChanges()" class="mt-4">
-              <h6 class="mb-3">Editar información</h6>
+              <h3 class="mb-3">Editar información</h3>
+
               <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="nombre" formControlName="first_name" minlength="2"
-                  maxlength="30">
+                <input type="text" class="form-control" id="nombre" formControlName="first_name"
+                       aria-describedby="nombreAyuda" minlength="2" maxlength="30">
                 <div *ngIf="profileForm.get('first_name')?.invalid && profileForm.get('first_name')?.touched"
-                  class="text-danger small">
+                     id="nombreAyuda" class="text-danger small">
                   Nombre requerido (2-30 caracteres).
                 </div>
               </div>
 
               <div class="mb-3">
                 <label for="apellido" class="form-label">Apellido</label>
-                <input type="text" class="form-control" id="apellido" formControlName="last_name" minlength="2"
-                  maxlength="30">
+                <input type="text" class="form-control" id="apellido" formControlName="last_name"
+                       aria-describedby="apellidoAyuda" minlength="2" maxlength="30">
                 <div *ngIf="profileForm.get('last_name')?.invalid && profileForm.get('last_name')?.touched"
-                  class="text-danger small">
+                     id="apellidoAyuda" class="text-danger small">
                   Apellido requerido (2-30 caracteres).
                 </div>
               </div>
 
               <div class="mb-3">
                 <label for="dni" class="form-label">DNI</label>
-                <input type="number" class="form-control" id="dni" formControlName="dni" min="1000000" max="99999999">
+                <input type="number" class="form-control" id="dni" formControlName="dni"
+                       aria-describedby="dniAyuda" min="1000000" max="99999999">
                 <div *ngIf="profileForm.get('dni')?.invalid && profileForm.get('dni')?.touched"
-                  class="text-danger small">
+                     id="dniAyuda" class="text-danger small">
                   DNI válido requerido (entre 1.000.000 y 99.999.999).
                 </div>
               </div>
 
               <div class="mb-3">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="tel" class="form-control" id="telefono" formControlName="telephone">
+                <input type="tel" class="form-control" id="telefono" formControlName="telephone"
+                       aria-describedby="telefonoAyuda">
                 <div *ngIf="profileForm.get('telephone')?.invalid && profileForm.get('telephone')?.touched"
-                  class="text-danger small">
+                     id="telefonoAyuda" class="text-danger small">
                   Teléfono requerido (solo números, entre 7 y 15 dígitos).
                 </div>
               </div>
+
               <div class="mb-3">
                 <label for="turno" class="form-label">Turno</label>
-                <select class="form-select" id="turno" formControlName="shift">
+                <select class="form-select" id="turno" formControlName="shift" aria-describedby="turnoAyuda">
                   <option value="" disabled>Seleccione un turno</option>
                   <option *ngFor="let shiftOption of shifts" [value]="shiftOption">{{ shiftOption }}</option>
                 </select>
                 <div *ngIf="profileForm.get('shift')?.invalid && profileForm.get('shift')?.touched"
-                  class="text-danger small">
+                     id="turnoAyuda" class="text-danger small">
                   Seleccione un turno.
                 </div>
               </div>
 
               <div class="mb-3">
                 <label for="curso" class="form-label">Curso/Año</label>
-                <select class="form-select" id="curso" formControlName="grade_year">
+                <select class="form-select" id="curso" formControlName="grade_year" aria-describedby="cursoAyuda">
                   <option value="" disabled>Seleccione un curso</option>
                   <option *ngFor="let year of gradeYears" [value]="year">{{ year }}°</option>
                 </select>
                 <div *ngIf="profileForm.get('grade_year')?.invalid && profileForm.get('grade_year')?.touched"
-                  class="text-danger small">
+                     id="cursoAyuda" class="text-danger small">
                   Seleccione un curso/año.
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-outline-secondary" [disabled]="profileForm.invalid">Guardar cambios</button>
+              <button type="submit" class="btn btn-outline-secondary" [disabled]="profileForm.invalid"
+                      aria-label="Guardar cambios de perfil">Guardar cambios</button>
             </form>
-
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Cargando -->
   <ng-template #loadingTemplate>
-    <div class="text-center mt-5">
+    <div class="text-center mt-5" aria-live="polite">
       <p>Cargando perfil...</p>
     </div>
   </ng-template>
 </main>
 
-
-<!-- boton para abrir modal -->
 <div class="container mt-3 mb-5 text-center">
-  <button class="btn btn-outline-secondary" (click)="openPurchaseHistory()">Ver historial de compras</button>
-  <button class="btn btn-outline-secondary" (click)="openReservationHistory()">Ver historial de reservas</button>
+  <button class="btn btn-outline-secondary" (click)="openPurchaseHistory()" aria-label="Abrir historial de compras">
+    Ver historial de compras
+  </button>
 </div>
 
-
-<!-- historial de compras -->
-<div class="modal fade" id="purchaseHistoryModal" tabindex="-1" aria-labelledby="purchaseHistoryModalLabel" aria-hidden="true">
+<!-- Modal: historial de compras -->
+<div class="modal fade" id="purchaseHistoryModal" tabindex="-1" role="dialog"
+     aria-modal="true" aria-labelledby="purchaseHistoryModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="purchaseHistoryModalLabel">Historial de compras</h5>
-        <button type="button" class="btn-close" aria-label="Cerrar" (click)="closePurchaseHistory()"></button>
+        <h2 class="modal-title" id="purchaseHistoryModalLabel">Historial de compras</h2>
+        <button type="button" class="btn-close" aria-label="Cerrar historial de compras" (click)="closePurchaseHistory()"></button>
       </div>
       <div class="modal-body">
         <div *ngIf="purchaseHistory?.length; else noPurchases">
           <div *ngFor="let purchase of purchaseHistory" class="mb-3 border-bottom pb-2">
-            <!-- <p><strong>ID Compra:</strong> {{ purchase.id }}</p> -->
             <p><strong>Fecha:</strong> {{ purchase.created_at }}</p>
-           
             <p><strong>Total:</strong> ${{ purchase.order.total }}</p>
             <p><strong>Método de pago:</strong> {{ purchase.order.payment_method }}</p>
             <ul>
@@ -147,25 +146,26 @@
         </ng-template>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closePurchaseHistory()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" aria-label="Cerrar modal de historial de compras"
+                (click)="closePurchaseHistory()">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
-<!-- historial de reservas -->
-<div class="modal fade" id="reservationHistoryModal" tabindex="-1" aria-labelledby="reservationHistoryModalLabel" aria-hidden="true">
+
+<!-- Modal: historial de reservas -->
+<div class="modal fade" id="reservationHistoryModal" tabindex="-1" role="dialog"
+     aria-modal="true" aria-labelledby="reservationHistoryModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="reservationHistoryModalLabel">Historial de reservas</h5>
-        <button type="button" class="btn-close" aria-label="Cerrar" (click)="closeReservationHistory()"></button>
+        <h2 class="modal-title" id="reservationHistoryModalLabel">Historial de reservas</h2>
+        <button type="button" class="btn-close" aria-label="Cerrar historial de reservas" (click)="closeReservationHistory()"></button>
       </div>
       <div class="modal-body">
-        <!-- Mensaje explicativo -->
         <p class="alert alert-info">
           Para finalizar el proceso, acercate a la cooperadora del colegio para abonar y retirar tu reserva.
         </p>
-
         <div *ngIf="reservas?.length; else noReservations">
           <div *ngFor="let reserva of reservas" class="mb-3 border-bottom pb-2">
             <p><strong>Fecha reservada:</strong> {{ reserva.reserved_for_date | date:'dd/MM/yyyy' }}</p>
@@ -183,9 +183,9 @@
         </ng-template>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeReservationHistory()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" aria-label="Cerrar modal de historial de reservas"
+                (click)="closeReservationHistory()">Cerrar</button>
       </div>
     </div>
   </div>
 </div>
-

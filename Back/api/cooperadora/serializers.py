@@ -187,15 +187,19 @@ class ReservationProductSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(serializers.ModelSerializer):
     items = ReservationProductSerializer(many=True, write_only=True)
-    items = ReservationProductSerializer(source='reservationproduct_set', many=True, read_only=True)
+    items_read = ReservationProductSerializer(source='reservationproduct_set', many=True, read_only=True)
 
     class Meta:
         model = Reservation
-        fields = ['id', 'reserved_for_date', 'notes', 'items']
+        fields = ['id', 'reserved_for_date', 'notes', 'items', 'items_read']
 
     def create(self, validated_data):
         items_data = validated_data.pop('items')
+    
+    # Extraer y quitar 'user' si está en validated_data
         user = self.context['request'].user
+        validated_data.pop('user', None)
+
         reservation = Reservation.objects.create(user=user, **validated_data)
 
         for item in items_data:

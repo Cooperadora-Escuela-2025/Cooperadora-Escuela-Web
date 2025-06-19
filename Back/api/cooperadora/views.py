@@ -611,7 +611,7 @@ def descargar_comprobante(request, cuota_id):
     p.drawString(50, y, "IMPORTANTE:")
     y -= line_height
     p.setFont("Helvetica", 11)
-    p.drawString(50, y, "Una vez abonado, enviar el número de transferencia al email:")
+    p.drawString(50, y, "Una vez abonado, enviar el comprobante de transferencia al email:")
     y -= line_height
     p.drawString(50, y, "cooperadora@escuela.edu.ar o al formulario en la sección pagar cuota")
 

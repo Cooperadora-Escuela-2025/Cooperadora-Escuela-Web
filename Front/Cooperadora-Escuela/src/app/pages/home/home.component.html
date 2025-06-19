@@ -47,42 +47,21 @@
     <!-- aside derecho -->
     <aside class="col-lg-3" aria-labelledby="noticias-colegio">
       <div class="p-3 bg-light border rounded-3 mb-4">
-        <h4 id="noticias-colegio">Noticias del Colegio</h4>
+        <h4 id="noticias-colegio">📢Actividades del Colegio</h4>
         <ul class="list-unstyled">
-          <li
-            class="mb-2"
-            role="button"
-            tabindex="0"
-            (click)="mostrarNoticia('inscripciones')"
-            (keydown.enter)="mostrarNoticia('inscripciones')"
-            aria-label="Ver detalles de inscripciones abiertas 2025"
-            style="cursor: pointer;"
-          >
-            📅 Inscripciones abiertas 2025
-          </li>
-          <li
-            class="mb-2"
-            role="button"
-            tabindex="0"
-            (click)="mostrarNoticia('asamblea')"
-            (keydown.enter)="mostrarNoticia('asamblea')"
-            aria-label="Ver detalles de la asamblea cooperadora del 15 de mayo"
-            style="cursor: pointer;"
-          >
-            📢 Asamblea cooperadora: 15 de mayo
-          </li>
-          <li
-            class="mb-2"
-            role="button"
-            tabindex="0"
-            (click)="mostrarNoticia('jornada')"
-            (keydown.enter)="mostrarNoticia('jornada')"
-            aria-label="Ver detalles de la jornada de puertas abiertas"
-            style="cursor: pointer;"
-          >
-            🏫 Jornada puertas abiertas el sábado
-          </li>
-        </ul>
+      <li
+        *ngFor="let key of clavesNoticias"
+        class="mb-2"
+        role="button"
+        tabindex="0"
+        (click)="mostrarNoticia(key)"
+        (keydown.enter)="mostrarNoticia(key)"
+        [attr.aria-label]="'Ver detalles de ' + noticias[key].titulo"
+        style="cursor: pointer;"
+      >
+        {{ noticias[key].titulo }}
+      </li>
+    </ul>
       </div>
 
       <!-- Carrusel dentro del aside -->
