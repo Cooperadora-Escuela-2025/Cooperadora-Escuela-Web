@@ -9,13 +9,12 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-product-add',
   standalone: true,
-  imports: [RouterModule,CommonModule,FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './product-add.component.html',
   styleUrl: './product-add.component.css'
 })
 export class ProductAddComponent {
-   product: Product = { id: 0, name: '', price: 0, image: '' };
-
+  product: Product = { id: 0, name: '', price: 0, image: '', quantity: 0 };
   constructor(
     private productService: ProductService,
     private router: Router,
@@ -36,6 +35,7 @@ export class ProductAddComponent {
     const formData = new FormData();
     formData.append('name', this.product.name);
     formData.append('price', this.product.price.toString());
+    formData.append('quantity', this.product.quantity.toString());
     formData.append('image', file);
 
     this.productService.createProduct(formData)

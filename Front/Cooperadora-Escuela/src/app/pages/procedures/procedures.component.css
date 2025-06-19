@@ -5,3 +5,23 @@
   margin-bottom: 15px;
   background-color: #f9f9f9;
 }
+
+.btn{
+  margin-top: 5px;
+  background-color: black;
+}
+
+.qr-image {
+  width: 144px; 
+  height: 144px;
+}
+
+.qr-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row{
+  background-color: #bec7cc;
+}

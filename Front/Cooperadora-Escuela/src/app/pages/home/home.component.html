@@ -1,56 +1,92 @@
+<div class="container py-2">
+  <div class="row">
 
-  <div class="container py-2">
-    <div class="row">
-      <!-- Columna principal (contenido actual) -->
-      <div class="col-lg-9">
-        <div class="p-5 mb-4 bg-body-tertiary rounded-3 custom-jumbotron">
-          <div class="container-fluid py-3 rounded-3 bg-dark p-2 text-white bg-opacity-75">
-            <p class="col-md-8 fs-3">
-              Nuestra cooperadora trabaja en conjunto con la escuela, las familias y la comunidad para fomentar un ambiente educativo inclusivo, seguro y de calidad.
-              Juntos, buscamos proporcionar las herramientas necesarias para el crecimiento integral de nuestros estudiantes.
-            </p>
-          </div>
-        </div>
-
-        <div class="row align-items-md-stretch">
-          <div class="col-md-6">
-            <div class="h-100 p-5 bg-body-tertiary border rounded-3 productos">
-              <h2>Productos Escolares</h2>
-              <button class="btn btn-secondary d-block mt-3 text-white" type="button" routerLink="/products">Ver catálogo</button>
-            </div>
-          </div>
-          <div class="col-md-6">
-  <div class="h-100 p-5 bg-body-tertiary border rounded-3 cuotas">
-    <div class="mb-3">
-      <h2>Abonar cuotas</h2>
-      <button class="btn btn-sm btn-secondary d-block mt-3 text-white" type="button" routerLink="#">
-        Ir a pagos
-      </button>
-    </div>
-    <!-- <div>
-      <h4 class="title-h4">Trámites</h4>
-      <button class="btn btn-sm btn-secondary text-white" type="button" routerLink="/procedure">
-        Ver trámites
-      </button>
-    </div> -->
-  </div>
-</div>
-
+    <!-- principal -->
+    <div class="col-lg-9">
+      <div class="p-5 mb-4 bg-body-tertiary rounded-3 custom-jumbotron">
+        <div class="container-fluid py-3 rounded-3 bg-dark p-2 text-white bg-opacity-75">
+          <p class="col-md-8 fs-3">
+            Nuestra cooperadora trabaja en conjunto con la escuela, las familias y la comunidad para fomentar un ambiente educativo inclusivo, seguro y de calidad.
+            Juntos, buscamos proporcionar las herramientas necesarias para el crecimiento integral de nuestros estudiantes.
+          </p>
         </div>
       </div>
 
-      <!-- Columna aside (noticias del colegio) -->
-      <aside class="col-lg-3">
-        <div class="p-3 bg-light border rounded-3">
-          <h4>Noticias del Colegio</h4>
-          <ul class="list-unstyled">
-            <li class="mb-2">📅 Inscripciones abiertas 2025</li>
-            <li class="mb-2">📢 Asamblea cooperadora: 15 de mayo</li>
-            <li class="mb-2">🏫 Jornada puertas abiertas el sábado</li>
-          </ul>
+      <div class="row align-items-md-stretch">
+        <div class="col-md-6">
+          <div class="h-100 p-5 bg-body-tertiary border rounded-3 productos">
+            <h2>Productos Escolares</h2>
+            <button
+              class="btn bg-dark text-white d-block mt-3 text-white"
+              type="button"
+              routerLink="/products"
+              aria-label="Ver catálogo de productos escolares"
+            >
+              Ver catálogo
+            </button>
+          </div>
         </div>
-        <div class="mt-4">
-  <h5>Anuncios destacados</h5>
+        <div class="col-md-6">
+          <div class="h-100 p-5 bg-body-tertiary border rounded-3 cuotas">
+            <div class="mb-3">
+              <h2>Abonar cuotas</h2>
+              <button
+                class="btn bg-dark text-white d-block mt-3 text-white"
+                type="button"
+                routerLink="/procedure"
+                aria-label="Ir a la sección de pagos de cuotas"
+              >
+                Ir a pagos
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- aside derecho -->
+    <aside class="col-lg-3" aria-labelledby="noticias-colegio">
+      <div class="p-3 bg-light border rounded-3 mb-4">
+        <h4 id="noticias-colegio">Noticias del Colegio</h4>
+        <ul class="list-unstyled">
+          <li
+            class="mb-2"
+            role="button"
+            tabindex="0"
+            (click)="mostrarNoticia('inscripciones')"
+            (keydown.enter)="mostrarNoticia('inscripciones')"
+            aria-label="Ver detalles de inscripciones abiertas 2025"
+            style="cursor: pointer;"
+          >
+            📅 Inscripciones abiertas 2025
+          </li>
+          <li
+            class="mb-2"
+            role="button"
+            tabindex="0"
+            (click)="mostrarNoticia('asamblea')"
+            (keydown.enter)="mostrarNoticia('asamblea')"
+            aria-label="Ver detalles de la asamblea cooperadora del 15 de mayo"
+            style="cursor: pointer;"
+          >
+            📢 Asamblea cooperadora: 15 de mayo
+          </li>
+          <li
+            class="mb-2"
+            role="button"
+            tabindex="0"
+            (click)="mostrarNoticia('jornada')"
+            (keydown.enter)="mostrarNoticia('jornada')"
+            aria-label="Ver detalles de la jornada de puertas abiertas"
+            style="cursor: pointer;"
+          >
+            🏫 Jornada puertas abiertas el sábado
+          </li>
+        </ul>
+      </div>
+
+      <!-- Carrusel dentro del aside -->
+       <h5>Anuncios destacados</h5>
   <div id="anunciosCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner rounded border">
       <div class="carousel-item active">
@@ -80,9 +116,23 @@
       <span class="carousel-control-next-icon"></span>
     </button>
   </div>
-</div>
 
-      </aside>
+    </aside>
+
+    <!-- ventana de noticia -->
+    <div *ngIf="noticiaSeleccionada" class="modal-overlay">
+      <div class="modal-content" role="dialog" aria-labelledby="modal-titulo" aria-describedby="modal-descripcion">
+        <h5 id="modal-titulo">{{ noticias[noticiaSeleccionada].titulo }}</h5>
+        <p id="modal-descripcion">{{ noticias[noticiaSeleccionada].descripcion }}</p>
+        <button
+          class="btn btn-secondary mt-3"
+          (click)="cerrarNoticia()"
+          aria-label="Cerrar detalles de la noticia"
+        >
+          Cerrar
+        </button>
+      </div>
     </div>
-  </div>
 
+  </div>
+</div>

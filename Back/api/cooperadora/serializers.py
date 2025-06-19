@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, OrderProduct, Procedure, Product, User,Profile
+from .models import ComprobantePago, Cuota, Order, OrderProduct, Product, Purchase, Reservation, ReservationProduct, User,Profile
 
 # serializer usuario
 class UserSerializer(serializers.ModelSerializer):
@@ -47,18 +47,24 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
         
-        
-# serializer producto      
+            
 # serializer producto      
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'image']
+        fields = ['id', 'name', 'price', 'image', 'quantity']
 
 
 # serializer ordenproducto
-class OrderProductSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # Usar PrimaryKeyRelatedField
+class OrderProductWriteSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
+    class Meta:
+        model = OrderProduct
+        fields = ['product', 'unit_price', 'quantity']
+
+class OrderProductReadSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
 
     class Meta:
         model = OrderProduct
@@ -66,31 +72,56 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 # serializer orden      
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderProductSerializer(many=True)  # Usar OrderProductSerializer para los productos
+    # Para crear
+    products = OrderProductWriteSerializer(many=True, write_only=True)
+
+    # Para leer
+    order_products = OrderProductReadSerializer(source='orderproduct_set', many=True, read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products']
+        fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products', 'order_products']
+
+    def validate_products(self, value):
+        # Validar stock antes de crear la orden
+        for item in value:
+            product = item['product']
+            quantity = item['quantity']
+
+            if product.quantity < quantity:
+                raise serializers.ValidationError(f"Sin stock suficiente para {product.name} (stock disponible: {product.quantity})")
+
+        return value
 
     def create(self, validated_data):
-        products_data = validated_data.pop('products')  # Extraer los datos de los productos
-        order = Order.objects.create(**validated_data)  # Crear la orden
+        products_data = validated_data.pop('products')
+        order = Order.objects.create(**validated_data)
 
-        # Crear los OrderProduct asociados
         for product_data in products_data:
-            OrderProduct.objects.create(order=order, **product_data)
+            product = product_data['product']
+            quantity = product_data['quantity']
+
+            product.quantity -= quantity
+            product.save()
+
+            OrderProduct.objects.create(
+                order=order,
+                product=product,
+                unit_price=product_data['unit_price'],
+                quantity=quantity
+            )
 
         return order
-    
+
     
 # serializer tramite
-class ProcedureSerializer(serializers.ModelSerializer):
-    procedure_type_display = serializers.CharField(source='get_procedure_type_display', read_only=True)
+# class ProcedureSerializer(serializers.ModelSerializer):
+#     procedure_type_display = serializers.CharField(source='get_procedure_type_display', read_only=True)
 
-    class Meta:
-        model = Procedure
-        fields = '__all__'
-        read_only_fields = ['user', 'request_date']
+#     class Meta:
+#         model = Procedure
+#         fields = '__all__'
+#         read_only_fields = ['user', 'request_date']
         
         
 # serializer para admin
@@ -119,3 +150,65 @@ class AdminUserCreationSerializer(serializers.Serializer):
         )
         Profile.objects.create(user=user)
         return user
+    
+
+class CuotaSerializer(serializers.ModelSerializer):
+    mes_display = serializers.SerializerMethodField()
+    tipo_display = serializers.CharField(source='get_tipo_display', read_only=True)
+
+    class Meta:
+        model = Cuota
+        fields = [
+            'id', 'tipo', 'tipo_display', 'mes', 'mes_display',
+            'anio', 'monto', 'pagado', 'fecha_pago', 'fecha_creacion'
+        ]
+        read_only_fields = ['id', 'monto', 'pagado', 'fecha_pago', 'fecha_creacion']
+
+    def get_mes_display(self, obj):
+        return dict(Cuota.MESES_CHOICES).get(obj.mes, '') if obj.mes else ''
+    
+
+# comprobante de cuota
+class ComprobantePagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComprobantePago
+        fields = '__all__'
+        read_only_fields = ('user',)
+        
+        
+#historial de compras    
+class PurchaseSerializer(serializers.ModelSerializer):
+    order = OrderSerializer()
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M')
+
+    class Meta:
+        model = Purchase
+        fields = ['id', 'order', 'created_at']
+        
+#reserva de productos 
+class ReservationProductSerializer(serializers.ModelSerializer):
+    product_name = serializers.CharField(source='product.name', read_only=True)
+
+    class Meta:
+        model = ReservationProduct
+        fields = ['product', 'product_name', 'quantity']
+
+class ReservationSerializer(serializers.ModelSerializer):
+    items = ReservationProductSerializer(many=True, write_only=True)
+    items = ReservationProductSerializer(source='reservationproduct_set', many=True, read_only=True)
+
+    class Meta:
+        model = Reservation
+        fields = ['id', 'reserved_for_date', 'notes', 'items']
+
+    def create(self, validated_data):
+        items_data = validated_data.pop('items')
+        user = self.context['request'].user
+        reservation = Reservation.objects.create(user=user, **validated_data)
+
+        for item in items_data:
+            ReservationProduct.objects.create(reservation=reservation, **item)
+
+        return reservation
+
+

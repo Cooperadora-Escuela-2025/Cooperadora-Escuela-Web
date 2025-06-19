@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes,authentication_classes
 from rest_framework.permissions import AllowAny,IsAuthenticated
-from .models import Profile, Procedure,User,Product, Order, OrderProduct
-from .serializers import AdminUserCreationSerializer, ProcedureSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
+from .models import Cuota, Profile, Purchase, Reservation,User,Product, Order, OrderProduct
+from .serializers import AdminUserCreationSerializer, CuotaSerializer, PurchaseSerializer, ReservationSerializer, UserSerializer,ProfileSerializer,ProductSerializer, OrderSerializer
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -26,6 +26,14 @@ from django.conf import settings
 from django.core.mail import send_mail
 from rest_framework.permissions import AllowAny
 import re
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from .serializers import ComprobantePagoSerializer
+from rest_framework.decorators import action
+
 
 @csrf_exempt
 def contacto(request):
@@ -242,7 +250,10 @@ class ProductViewSet(viewsets.ModelViewSet):
         product = get_object_or_404(Product, pk=pk)
         product.name = request.data.get('name', product.name)
         product.price = request.data.get('price', product.price)
-    
+
+        if 'quantity' in request.data:
+            product.quantity = request.data.get('quantity', product.quantity)
+        
         if 'image' in request.FILES:
             product.image = request.FILES['image']  
 
@@ -271,16 +282,25 @@ class CheckoutView(APIView):
                 order = serializer.save()
                 logger.info("Orden guardada")
 
+                Purchase.objects.create(user=request.user, order=order)
+
+                # Si es efectivo, simplemente marcar como pagado
+                if order.payment_method == 'efectivo':
+                    order.status = 'pagado'
+                    order.save()
+                    return Response({'message': 'Compra en efectivo realizada y stock actualizado'}, status=status.HTTP_201_CREATED)
+
+                # Si es MercadoPago, crear preferencia
                 sdk = mercadopago.SDK(settings.MERCADOPAGO_ACCESS_TOKEN)
 
                 items = []
                 for order_product in OrderProduct.objects.filter(order=order):
                     items.append({
-        'title': order_product.product.name,
-        'quantity': order_product.quantity,
-        'unit_price': float(order_product.unit_price),
-        'currency_id': 'ARS'
-    })
+                        'title': order_product.product.name,
+                        'quantity': order_product.quantity,
+                        'unit_price': float(order_product.unit_price),
+                        'currency_id': 'ARS'
+                    })
 
                 logger.info(f"Items: {items}")
 
@@ -294,11 +314,11 @@ class CheckoutView(APIView):
                 }
 
                 preference_response = sdk.preference().create(preference_data)
-                logger.info(f"Respuesta MercadoPago: {preference_response}") #muestra el error por consola
+                logger.info(f"Respuesta MercadoPago: {preference_response}")
 
                 if preference_response["status"] == 201:
                     preference_url = preference_response["response"]["init_point"]
-                    logger.info(f"URL de pago: {preference_url}")  
+                    logger.info(f"URL de pago: {preference_url}")
                     return Response({"payment_url": preference_url}, status=status.HTTP_201_CREATED)
                 else:
                     logger.error(f"Error en la creación de la preferencia: {preference_response}")
@@ -309,6 +329,7 @@ class CheckoutView(APIView):
                 return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # fin checkout  
 
 # status
@@ -334,6 +355,20 @@ def payment_status(request):
                 if status_pago == "approved":
                     order.status = "pagado"
                     order.save()
+                    
+                    # DESCONTAR STOCK 
+                    for order_product in OrderProduct.objects.filter(order=order):
+                        product = order_product.product
+                        if product.quantity < order_product.quantity:
+                                raise ValueError(f"No hay suficiente stock para el producto {product.name}")
+                        product.quantity -= order_product.quantity
+                        product.save()
+                        
+                    else:
+                            return JsonResponse({
+                                "error": f"Stock insuficiente para el producto {product.name}"
+                            }, status=400)
+                    
             except Order.DoesNotExist:
                 return JsonResponse({"error": "Orden no encontrada"}, status=404)
 
@@ -499,13 +534,222 @@ def register_user_by_admin(request):
 
 
 # tramite
-class ProcedureViewSet(viewsets.ModelViewSet):
-    serializer_class = ProcedureSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# class ProcedureViewSet(viewsets.ModelViewSet):
+#     serializer_class = ProcedureSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_queryset(self):
+#         return Procedure.objects.filter(user=self.request.user)  # Cambié 'usuario' por 'user'
+
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)
+# fin tramite
+
+# cuota
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def descargar_comprobante(request, cuota_id):
+    cuota = get_object_or_404(Cuota, id=cuota_id, usuario=request.user)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=comprobante_cuota_{cuota.id}.pdf'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    
+    p.setFont("Helvetica-Bold", 18)
+    p.drawCentredString(width / 2, height - 50, "Comprobante de Cuota Cooperadora Escuela")
+    p.setLineWidth(1)
+    p.setStrokeColor(colors.grey)
+    p.line(30, height - 60, width - 30, height - 60)
+
+    # Datos del usuario
+    p.setFont("Helvetica", 12)
+    y = height - 100
+    line_height = 20
+
+    p.drawString(50, y, f"Nombre del alumno: {cuota.usuario.get_full_name() or cuota.usuario.username}")
+    y -= line_height
+    tipo = cuota.get_tipo_display()
+    mes = dict(Cuota.MESES_CHOICES).get(cuota.mes, '') if cuota.mes else ''
+    p.drawString(50, y, f"Tipo de cuota: {tipo}")
+    y -= line_height
+    if mes:
+        p.drawString(50, y, f"Mes: {mes}")
+        y -= line_height
+    p.drawString(50, y, f"Año: {cuota.anio}")
+    y -= line_height
+    p.drawString(50, y, f"Monto: ${cuota.monto}")
+    y -= line_height
+    p.drawString(50, y, f"Estado de pago: {'PAGADO' if cuota.pagado else 'PENDIENTE'}")
+    y -= line_height
+    p.drawString(50, y, f"Fecha de generación: {cuota.fecha_creacion.strftime('%d/%m/%Y')}")
+    y -= line_height
+    p.drawString(50, y, f"Número de comprobante: {cuota.nro_comprobante}")
+    y -= line_height
+
+    
+    y -= 20
+    p.line(30, y, width - 30, y)
+    y -= 30
+
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, y, "Datos para transferencia bancaria:")
+    y -= line_height
+    p.setFont("Helvetica", 12)
+    p.drawString(70, y, "CBU: 0000003100001234567890")
+    y -= line_height
+    p.drawString(70, y, "Alias: cooperadora.escuela")
+    y -= line_height
+    p.drawString(70, y, "Banco: Banco Nación")
+    
+    y -= 30
+    p.setFont("Helvetica-Bold", 11)
+    p.setFillColor(colors.black)
+    p.drawString(50, y, "IMPORTANTE:")
+    y -= line_height
+    p.setFont("Helvetica", 11)
+    p.drawString(50, y, "Una vez abonado, enviar el número de transferencia al email:")
+    y -= line_height
+    p.drawString(50, y, "cooperadora@escuela.edu.ar o al formulario en la sección pagar cuota")
+
+
+    p.setFont("Helvetica-Oblique", 10)
+    p.setFillColor(colors.grey)
+    p.drawCentredString(width / 2, 120, "Gracias por colaborar con la cooperadora escolar.")
+
+    p.showPage()
+    p.save()
+    return response
+
+
+# calculo el monto segun cuota
+def calcular_monto(tipo):
+    return {
+        'mensual': 1000,
+        'anual': 10000
+    }.get(tipo, 0)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def crear_cuota(request):
+    data = request.data
+    tipo = data.get('tipo')
+    mes = data.get('mes') 
+    anio = data.get('anio')
+
+    if not tipo or tipo not in dict(Cuota.TIPO_CHOICES):
+        return Response({'error': 'Tipo inválido'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    if not anio:
+        return Response({'error': 'Año requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if tipo == 'mensual' and not mes:
+        return Response({'error': 'Mes requerido para cuota mensual'}, status=status.HTTP_400_BAD_REQUEST)
+
+    monto = calcular_monto(tipo)
+
+    cuota = Cuota.objects.create(
+        usuario=request.user,
+        tipo=tipo,
+        mes=mes if tipo == 'mensual' else None,
+        anio=anio,
+        monto=monto
+    )
+
+    serializer = CuotaSerializer(cuota)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+import qrcode
+from io import BytesIO
+
+
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def ver_qr_pago(request, cuota_id):
+    cuota = get_object_or_404(Cuota, id=cuota_id, usuario=request.user)
+
+    
+    datos_qr = f"""
+    Nombre: {cuota.usuario.get_full_name() or cuota.usuario.username}
+    Cuota: {cuota.get_tipo_display()} {cuota.mes or ''}/{cuota.anio}
+    Monto: ${cuota.monto}
+    CBU: 0000003100001234567890
+    Alias: cooperadora.escuela
+    """
+
+    # genero el qr
+    qr = qrcode.make(datos_qr)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    return HttpResponse(buffer.getvalue(), content_type="image/png")
+
+
+# 
+class EnviarComprobanteView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        serializer = ComprobantePagoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user) 
+            return Response({'mensaje': 'Comprobante guardado correctamente'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# historial de compra
+class PurchaseHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        purchases = Purchase.objects.filter(user=request.user).order_by('-created_at')
+
+        data = []
+        for purchase in purchases:
+            order = purchase.order
+            products = []
+            for op in order.orderproduct_set.all():
+                products.append({
+                    'product_id': op.product.id,
+                    'product_name': op.product.name,
+                    'unit_price': op.unit_price,
+                    'quantity': op.quantity,
+                })
+
+            data.append({
+                'purchase_id': purchase.id,
+                'created_at': purchase.created_at.strftime('%Y-%m-%d %H:%M'),
+                'order': {
+                    'id': order.id,
+                    'name': order.name,
+                    'surname': order.surname,
+                    'dni': order.dni,
+                    'total': order.total,
+                    'payment_method': order.payment_method,
+                    'products': products,
+                }
+            })
+
+        return Response(data)
+    
+class ReservationViewSet(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Procedure.objects.filter(user=self.request.user)  # Cambié 'usuario' por 'user'
+        return self.queryset.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-# fin tramite
+
+    @action(detail=False, methods=['get'], url_path='usuario')
+    def reservas_del_usuario(self, request):
+        reservas = self.get_queryset()  
+        serializer = self.get_serializer(reservas, many=True)
+        return Response(serializer.data)

@@ -3,5 +3,5 @@ export interface Product {
     name: string;
     price: number;
     image: string;
-    quantity?: number; // Propiedad opcional para la cantidad
+    quantity: number;
 }

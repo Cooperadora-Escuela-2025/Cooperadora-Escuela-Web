@@ -66,4 +66,9 @@ createUserByAdmin(userData: any, token: string) {
 
     return this.http.post(`${this.baseUrl}create-user/`, userData, { headers });
   }
+
+  // historial de compra 
+  getPurchaseHistory() {
+    return this.http.get<any[]>(this.baseUrl+'history/');
+  }
 }

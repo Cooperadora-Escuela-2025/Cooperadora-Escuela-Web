@@ -172,7 +172,7 @@ body.accesible .btn-outline-light {
   border: 1px solid var(--btn-outline-color);
   color: var(--text-color);
 }
-.text-white{
+/* .text-white{
   color: var(--btn-outline-color);
   background-color: var(--btn-outline-bg);
  
@@ -181,12 +181,12 @@ body.accesible .btn-outline-light {
   color: var(--btn-outline-color)!important;
   background-color: var(--btn-outline-bg);
  
-}
+} */
 
 .btn-outline-secondary{
     color: var(--btn-outline-color);
   background-color: var(--btn-outline-bg);
-  border: 1px solid var(--btn-outline-color);
+
 }
 
 
