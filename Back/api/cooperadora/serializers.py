@@ -56,8 +56,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 # serializer ordenproducto
-class OrderProductSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())  # Usar PrimaryKeyRelatedField
+class OrderProductWriteSerializer(serializers.ModelSerializer):
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+
+    class Meta:
+        model = OrderProduct
+        fields = ['product', 'unit_price', 'quantity']
+
+class OrderProductReadSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
 
     class Meta:
         model = OrderProduct
@@ -65,23 +72,26 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 # serializer orden      
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderProductSerializer(many=True)
+    # Para crear
+    products = OrderProductWriteSerializer(many=True, write_only=True)
+
+    # Para leer
+    order_products = OrderProductReadSerializer(source='orderproduct_set', many=True, read_only=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products']
+        fields = ['id', 'name', 'surname', 'dni', 'total', 'payment_method', 'products', 'order_products']
 
-    def validate(self, data):
-        # Validar stock para cada producto antes de crear la orden
-        for item in data['products']:
+    def validate_products(self, value):
+        # Validar stock antes de crear la orden
+        for item in value:
             product = item['product']
             quantity = item['quantity']
 
             if product.quantity < quantity:
-                raise serializers.ValidationError({
-    "products": [f"Sin stock suficiente para {product.name} (stock disponible: {product.quantity})"]
-})
-        return data
+                raise serializers.ValidationError(f"Sin stock suficiente para {product.name} (stock disponible: {product.quantity})")
+
+        return value
 
     def create(self, validated_data):
         products_data = validated_data.pop('products')
@@ -91,11 +101,9 @@ class OrderSerializer(serializers.ModelSerializer):
             product = product_data['product']
             quantity = product_data['quantity']
 
-            # Descontar stock
             product.quantity -= quantity
             product.save()
 
-            # Crear relación
             OrderProduct.objects.create(
                 order=order,
                 product=product,
